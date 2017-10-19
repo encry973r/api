@@ -1,0 +1,11 @@
+.navbar.navbar-inverse{
+	border-radius: 0px;
+}
+footer{
+	text-align: center;
+	height: 50px;
+	padding-top: 10px;
+	background-color: #222;
+	color: white;
+	margin-top: 20px;
+}

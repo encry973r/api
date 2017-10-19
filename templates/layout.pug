@@ -1,0 +1,66 @@
+doctype html
+html
+	head
+		title Peer2peerFunding
+		link(rel='stylesheet' href='/bowe_components/bootstrap/dist/css/bootstrap.css')
+		link(rel='stylesheet' href='/css/style.css')
+		script(src='/bowe_components/jquery/dist/jquery.js')
+
+	body
+		nav.navbar.navbar-inverse.fixed
+			.container-fluid
+				.navbar-header
+					button.navbar-toggle(type='button' data-toggle="collapse" data-target="#example-navbar-collapse")
+						span.icon-bar
+						span.icon-bar
+						span.icon-bar
+					a.navbar-brand(href='/') Peer2peerFunding
+				#example-navbar-collapse.collapse.navbar-collapse.collapse
+					ul.nav.navbar-nav
+							if user
+								li.dropdown
+									a(href="#" data-toggle="dropdown" class='dropdown-toggle') Navigation
+										b.caret
+									ul.dropdown-menu
+										li
+											a(href="/users/dashboard")
+												span.glyphicon.glyphicon-home  Dashboard
+										li
+											a(href="/users/reservation")
+												span.glyphicon.glyphicon-list  Reservation List
+										li
+											a(href="/users/profile")
+												span.glyphicon.glyphicon-edit  Profile
+										li
+											a(href="/users/transactions")
+												span.glyphicon.glyphicon-transfer  Transactions
+										li
+											a(href="/users/support")
+												span.glyphicon.glyphicon-envelope  Support
+										li
+											a(href="/users/blog")
+												span.glyphicon.glyphicon-pencil Blog
+					ul.nav.navbar-nav.navbar-right
+						if user
+							li 
+								a(href='/users/profile')
+									span.glyphicon.glyphicon-user #{user.username}
+							li 
+								a(href='/users/logout')
+									span.glyphicon.glyphicon-log-out Logout
+		.container
+			!= messages('message', locals)
+			if errors
+				each error,  i in errors
+					div(class='alert alert-danger')= error.msg
+
+			block content
+			br
+		hr
+
+	footer
+		p copyright &copy; 2017
+		script(src='/bowe_components/bootstrap/dist/js/bootstrap.js')
+		script(src='/js/main.js')
+
+

@@ -1,0 +1,201 @@
+extends layout
+
+block content
+	if user
+		input#hidden(type='hidden' value=user._id)
+
+		if outgoing != ''
+			table.table.table-bordered
+				thead Outgoing transactions
+					tr
+						th index
+						th id
+						th Upline Name
+						th Phone
+						th Bankname
+						th Account Holder
+						th Account no
+						th Amount(N)
+						th Status
+				tbody
+					each out, i in outgoing
+						tr
+							td= i+1
+							td= out._id
+							td 
+								p #{out.uplineFirstname} #{out.uplineLastname}
+							td= out.phone
+								each bank, i in out.bank
+									td= bank.bankname
+									td= bank.accountHolder
+									td= bank.accountNumber
+							td= out.amount
+							if out.confirmation_flag == 'Pending'
+								td(style='color: black')= out.confirmation_flag
+							else if out.confirmation_flag == 'Declined'
+								td(style='color: #d9534f')= out.confirmation_flag
+							else
+								td(style='color: green')= out.confirmation_flag
+		else
+			p.alert.alert-info No outgoing transaction for now
+
+		if incoming != ''
+			table.table.table-bordered
+				thead Incoming transactions
+					tr
+						th index
+						th id
+						th Downline Username
+						th Downline Name
+						th Downline Phone
+						th Amount(N)
+						th Action
+				tbody
+					each inc, uplineIndex in incoming
+						tr
+							td= uplineIndex+1
+							td= inc._id
+							td= inc.downline
+							td
+								p #{inc.downlineFirstname}  #{inc.downlineLastname} 
+							td= inc.phone
+							td= inc.amount
+							if inc.confirmation_flag == 'Pending'
+								td#state(style='width: 180px')
+									input.btn.btn-primary#approve(type='button' value='approve' data-toggle="modal" data-target="#approveModal")
+									input.btn.btn-danger#decline(type='button' value='Decline' style='margin-left:10px' data-toggle="modal" data-target="#declineModal")
+									input#hiddenData(type='hidden' value=inc.downline+'/'+inc.amount+'/'+inc.coupleIndex+'/'+inc.coupleId+'/'+uplineIndex)
+							else if inc.confirmation_flag == 'Declined'
+								td(style='color: #d9534f')=inc.confirmation_flag
+							else
+								td(style='color: green')=inc.confirmation_flag
+		else
+			p.alert.alert-info No incoming transaction for now
+
+
+	div.modal.fade(tabindex="-1" id="approveModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true")
+		div.modal-dialog
+			div.modal-content
+				div.modal-header
+					button.close(data-dismiss="modal" aria-hidden="true") &times;
+					h4.modal-title(id="myModalLabel") Approve Transaction
+				div.modal-body 
+					.well
+						p#top Are you sure about this? As this can not be undone
+						p#error
+						p.alert.alert-success#approveSuccess
+						input.btn.btn-large.btn-block.btn-primary#approveBtn(type="button" class="btn btn-primary" value='Confirm')
+				div.modal-footer
+					input.btn.btn-default(type="button" data-dismiss="modal" value='Close') 
+
+	div.modal.fade(tabindex="-1" id="declineModal" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true")
+		div.modal-dialog
+			div.modal-content
+				div.modal-header
+					button.close(data-dismiss="modal" aria-hidden="true") &times;
+					h4.modal-title(id="myModalLabel2") Decline Transaction
+				div.modal-body 
+					.well
+						p#top Are you sure about this? As this can not be undone
+						p#error
+						p.alert.alert-success#declineSuccess
+						input.btn.btn-large.btn-block.btn-danger#declineBtn(type="button" class="btn btn-primary" value='Decline')
+				div.modal-footer
+					input.btn.btn-default(type="button" data-dismiss="modal" value='Close') 
+
+
+		
+	script.
+		$(document).ready(function(){
+			
+		const myId = $('#hidden').val();
+		$('#declineSuccess').hide();
+		$('#approveSuccess').hide();
+
+
+			$('#approve').on('click', function(e){
+				//Always use this to prevent stupid!!!! default behaviour
+				e.preventDefault();
+
+				//$target = $(e.target);
+				//var collection = ($target.attr('data-id'));
+				var collection = $('#hiddenData').val();
+				collection = collection.split('/');
+
+				var duname = collection[0];
+				var approvalAmount = collection[1];
+				var coupleIndex = collection[2];
+				var coupleId = collection[3];
+				var uplineIndex = collection[4];
+				//alert(duname+approvalAmount+coupleIndex+coupleId+uplineIndex);
+
+					$('#approveBtn').on('click', function(e){
+						$('#approveBtn').hide();
+						$('#top').hide();
+						//alert(duname+approvalAmount+coupleIndex+coupleId+uplineIndex);
+						e.preventDefault();
+						$.ajax({
+								type: 'POST',
+								url: '/users/approvedownline',
+								data: {duname: duname, approvalAmount: approvalAmount, myId: myId, coupleIndex: coupleIndex, coupleId: coupleId, uplineIndex: uplineIndex},
+								success: (response)=>{
+									$('#approveSuccess').html(response.msg);
+									$('#approveSuccess').show();
+									$('#approve').hide();	//won't be needed if socket.io is implemented
+									$('#decline').hide();	//won't be needed if socket.io is implemented
+									$('#state').css('color', 'green').html('Approved'); //won't be needed if socket.io were to be implemented
+								},
+								error: (err)=>{
+									console.log(err);
+								}
+						});
+
+
+						//}
+				 });
+			});
+
+
+			$('#decline').on('click', function(e){
+				//Always use this to prevent stupid!!!! default behaviour
+				e.preventDefault();
+
+				$target = $(e.target);
+				var inserts = $('#hiddenData').val();
+				collection2 = inserts.split('/');
+
+				var duname = collection2[0];
+				var approvalAmount = collection2[1];
+				var coupleIndex = collection2[2];
+				var coupleId = collection2[3];
+				var uplineIndex = collection2[4];
+				//alert(duname+approvalAmount+coupleIndex+coupleId+uplineIndex);
+
+					$('#declineBtn').on('click', function(e){
+						$('#declineBtn').hide();
+						$('#top').hide();
+						//alert(duname+approvalAmount+coupleIndex+coupleId+uplineIndex);
+						e.preventDefault();
+						$.ajax({
+								type: 'POST',
+								url: '/users/declinedownline',
+								data: {duname: duname, approvalAmount: approvalAmount, myId: myId, coupleIndex: coupleIndex, coupleId: coupleId, uplineIndex: uplineIndex},
+								success: (response)=>{
+									$('#declineSuccess').html(response.msg);
+									$('#declineSuccess').show();
+									$('#approve').hide();	//won't be needed if socket.io is implemented
+									$('#decline').hide();	//won't be needed if socket.io is implemented
+									$('#state').css('color', '#d9534f').html('Declined'); //won't be needed if socket.io is 
+									//window.location.href='/users/transactions';
+
+								},
+								error: (err)=>{
+									console.log(err);
+								}
+						});
+
+
+						//}
+				 });
+			});
+		});
