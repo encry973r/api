@@ -14,100 +14,33 @@ block content
 					th Firstname
 					th Action
 			tbody
-				if reserves
-					each reserve, i in reserves
-						tr
-							td= reserve._id
-							td= reserve.username
-							td= reserve.amountRemaining
-							td= reserve.firstname
-							td
-								if reserve.firstname !== user.firstname
-									input.btn.btn-primary#reserve(type='button' data-id=reserve._id+'/'+reserve.amountRemaining+'/'+reserve.username 
-									value='Reserve' data-toggle="modal" data-target="#myModal")
-								else
-									input(type='hidden')
-									
-
-	
-	div.modal.fade(tabindex="-1" id="myModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true")
-		div.modal-dialog
-			div.modal-content
-				div.modal-header
-					button.close(data-dismiss="modal" aria-hidden="true") &times;
-					h4.modal-title(id="myModalLabel") Reservation Process
-				div.modal-body 
-					.well
-						p#top You are to type in the reservation amount for upline
-						p#success.alert.alert-success
-						p#error.alert.alert-danger
-						input(type='text', name='amount' id='amount')
-						b#remaining
-				div.modal-footer
-					input.btn.btn-default(type="button" data-dismiss="modal" value='Close') 
-					input.btn.btn-primary(button type="button" class="btn btn-primary" value='Submit' id='confirm')
-
-
-	script.
-		$(document).ready(function(){
-			//executed while the modal is being displayed!!!
-			$('#error').hide();
-			$('#success').hide();
-
-		 	$('#reserve').on('click', function(e){
-		 		$target = $(e.target);
-				var data = ($target.attr('data-id'));
-				data = data.split('/');
-				const uplineId= data[0];
-				var realAmount = data[1];
-				let uname = data[2];
-				const myId = $('#hidden').val();
-				//alert(realAmount);
-
-				$('#confirm').on('click', function(e){
-					var amountInput = $('#amount').val();
-					
-					if(realAmount == 0){
-						$('#error').html('Sorry, the user has completely been reserved. Kindly pick someone else. Thank you.');
-						$('#error').show();
-					}else{	
-						if(amountInput < 20000){
-							$('#remaining').text(' Amount left = N'+ (realAmount - amountInput));
-							$('#error').html('sorry, enter amount equal or above N20000');
-							$('#error').show();
-						}else if((realAmount - amountInput) < 20000 &&  (realAmount - amountInput) != 0){
-							$('#error').html('Make sure the amount remaining isn\'t less than N20,000');
-							$('#error').show();
-							$('#remaining').text(' Amount left = N'+ (realAmount - amountInput));
-						}else{
-
-							$.ajax({
-								type: 'POST',
-								url: '/users/submitreservation',
-								data: {uplineId: uplineId, amountInput: amountInput, myId: myId, realAmount: realAmount},
-								success: (response)=>{
-									//alert(response.status);
-									if(response.status == 'Reservation made!'){
-										$('#success').html(response.status);
-										$('#success').show();
-										window.location.href = '/users/transactions';
-									}else{
-										realAmount = response.currentRemainingAmount;
-										$('#error').html(response.status);
-										$('#error').show();
-										window.location.href = '/users/reservation';
-									}
-
-									
-								},
-								error: (err)=>{
-									console.log(err);
-								}
-							});
-
-
-						}
-				}
-				});	
-		 	});
-		});
+				if current_state.state == 'show'
+					if deadline == 'empty' || user.suspended == false
+						if reserves
+							each reserve, i in reserves
+								tr
+									td= reserve._id
+									td= reserve.username
+									td(id=i)= reserve.amountRemaining
+									td= reserve.firstname
+									td
+										if reserve.firstname !== user.firstname
+											form(method="POST", action="/users/payment")
+												input(type='hidden' name='input' value=reserve._id+'/'+reserve.amountRemaining+'/'+reserve.username +'/'+reserve.firstname+ '/' + reserve.lastname + '/' + reserve.phone + '/' + reserve.bankDetails+'/'+user.profileUpdated)
+												input.btn.btn-primary#reserve(type='submit' data-id=reserve._id+'/'+reserve.amountRemaining+'/'+reserve.username +'/'+i value='Reserve')
+					else if deadline == 'Pending'
+						h4.alert.alert-info You are only allowed to make a single reservation at a time. Upon approval from your upline, you are then eligible to make and receive reservations.
+						if reserves
+							each reserve, i in reserves
+								tr
+									td= reserve._id
+									td= reserve.username
+									td(id=i)= reserve.amountRemaining
+									td= reserve.firstname
+									td Not allowed
+					else if deadline == 'expired'
+						h3 Your time for payment has expired.
+					else if user.suspended == true && timeLeft > 0
+						h3(style='color: red') Your account has been suspended. You are not allowed to make any reservation until it is reactivated in #{timeLeft}hrs time.
+						
+		script.

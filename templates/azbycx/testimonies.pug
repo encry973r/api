@@ -1,0 +1,40 @@
+extends layout
+
+block content
+	style.
+		.btn{
+			border-radius: 0px;
+		}
+
+	if testimonies != ''	
+
+		h1(style='text-align: center') Tesimonies Stack
+		each testimony, i in testimonies
+			div.row
+				div.col-lg-6.col-lg-offset-3
+					div.well(style='background: rgba(34, 149, 203, 1);')
+						div.well-heading
+							h5(style='color: white') ##{i+1} Testimony #{i+1}
+						hr
+						div.well-body
+							div.row
+								div.col-lg-12(style='color:white')
+										h4 Testifier : 
+											b #{testimony.testifier}
+										hr
+										h5 Content : 
+											b #{testimony.testimony}
+										hr
+										input#reply.btn.btn-primary#publish(type='button' value='Publish' style='margin-left: 1%;width: 48%')
+										input#discard.btn.btn-danger#discard(type='button' value='Discard' style='margin-left: 1%; width: 48%')
+	else
+		p.alert.alert-info No testimonies for now
+
+	script.
+		$(document).ready(function(){
+			$('#publish').on('click', function(e){
+				e.preventDefault();
+
+				
+			});
+		});

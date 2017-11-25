@@ -1,0 +1,30 @@
+extends layout
+
+block content
+	h1 Users List
+	if users != ''
+		table.table.table-bordered
+			thead
+				tr
+					th id
+					th username
+					th amount received
+					th amount remaining
+					th Firstname
+					th Lastname
+					th Suspension
+			tbody
+				each user, i in users
+					tr
+						td= user._id
+						td= user.username
+						td= user.amountReceived
+						td= user.amountRemaining
+						td= user.firstname
+						td= user.lastname
+						if user.suspended == true
+							td(style='color: red')= user.suspended
+						else
+							td(style='color: green')= user.suspended
+	else
+		p.alert.alert-info No registered user for now

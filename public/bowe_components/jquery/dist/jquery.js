@@ -9561,7 +9561,7 @@ jQuery.ajaxTransport( function( options ) {
 				callback = callback( "abort" );
 
 				try {
-
+					//alert(options.data);
 					// Do send the request (this may raise an exception)
 					xhr.send( options.hasContent && options.data || null );
 				} catch ( e ) {

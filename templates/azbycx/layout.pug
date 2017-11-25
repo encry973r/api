@@ -1,0 +1,116 @@
+doctype html
+html
+	head
+		title Swaaypay
+		link(rel='stylesheet' href='../bowe_components/bootstrap/dist/css/bootstrap.css')
+		link(rel='stylesheet' href='../css/style.css')
+		style.
+			.navbar{
+				position: fixed;
+				width: 100%;
+				z-index: 1;
+				top: 0px;
+			}
+			.navbar:after{
+				content: '';
+				clear: both;
+				display: block;
+
+			}
+			.container:before{
+				content: '';
+				clear: both;
+				display: block;
+			}
+			
+			.container{
+				margin-top: 70px;
+				min-height: 60vh;
+			}
+
+			footer{
+				position: relative;
+				width: 100vw;
+				height: 70px;
+			}
+			button{
+				border-radius: none;
+			}
+		script(src='../bowe_components/jquery/dist/jquery.js')
+
+	body
+		nav.navbar.navbar-inverse.fixed
+			.container-fluid
+				.navbar-header
+					button.navbar-toggle(type='button' data-toggle="collapse" data-target="#example-navbar-collapse")
+						span.icon-bar
+						span.icon-bar
+						span.icon-bar
+					a.navbar-brand(href='/') Peer2peerFunding
+				#example-navbar-collapse.collapse.navbar-collapse.collapse
+					ul.nav.navbar-nav
+							if user
+								li.dropdown
+									a(href="#" data-toggle="dropdown" class='dropdown-toggle') Navigation
+										b.caret
+									ul.dropdown-menu
+										li
+											a(href="/medusa123/dashboard")
+												span.glyphicon.glyphicon-home  Dashboard
+										li
+											a(href="/medusa123/reservation")
+												span.glyphicon.glyphicon-list  Reservation List
+										li
+											a(href="/medusa123/profile")
+												span.glyphicon.glyphicon-edit  Profile
+										li
+											a(href="/medusa123/transactions")
+												span.glyphicon.glyphicon-transfer  Transactions
+										li
+											a(href="/medusa123/admins")
+												span.glyphicon.glyphicon-king  Admins
+										li
+											a(href="/medusa123/users")
+												span.glyphicon.glyphicon-user  Users
+										li
+											a(href="/medusa123/complaints")
+												span.glyphicon.glyphicon-inbox  Complaints
+										li
+											a(href="/medusa123/declined-transactions")
+												span.glyphicon.glyphicon-remove  Declined Transactions
+										li
+											a(href="/medusa123/purge")
+												span.glyphicon.glyphicon-remove  Purge Defaulters
+										li
+											a(href="/medusa123/purged-accounts")
+												span.glyphicon.glyphicon-off  Purged Accounts
+										//- li
+										//- 	a(href="/medusa123/testimonies")
+										//- 		span.glyphicon.glyphicon-share  Testimonies
+
+
+
+					ul.nav.navbar-nav.navbar-right
+						if user
+							li 
+								a(href='/medusa123/profile')
+									span.glyphicon.glyphicon-user #{user.username}
+							li 
+								a(href='/medusa123/logout')
+									span.glyphicon.glyphicon-log-out Logout
+		.container
+			!=messages('message', locals)
+			if errors
+				each error,  i in errors
+					p#err #{error.msg}
+
+			block content
+			br
+		hr
+
+		footer
+			p copyright &copy; 2017
+			i(style='float: right') designed by encrybit01@gmail.com
+			script(src='../bowe_components/bootstrap/dist/js/bootstrap.js')
+
+

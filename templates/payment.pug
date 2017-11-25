@@ -1,0 +1,389 @@
+extends layout
+
+block content
+
+	style.
+		.box{
+			background: rgba(34, 149, 203, 1);
+			display: block;
+			position: relative;
+			top: 10px;
+			padding-left: 60px;
+			padding-right: 60px;
+			padding-top: 50px;
+			padding-bottom: 50px;
+			width: 100%;
+			color: #fff;
+			}
+		#pay{
+			border-radius: 0px;
+
+		}
+		.alert{
+			border-radius: 0px;
+
+		}
+		p, #amountInput{
+			font-size: 12px;
+			background: white;
+			color: rgba(34, 149, 203, 0.9);
+			color: #222;
+			padding-top: 10px;
+			padding-bottom: 10px;
+			padding-left: 5px;
+			padding-right: 5px;
+			height: 50px;
+		}
+		#amt{
+			margin-left: 0px;
+			margin-right: 0px;
+			width: 100%;
+		}
+		#amountInput{
+			border-radius: 0px;
+		}
+
+		b{
+			font-size: 15px;
+		}
+
+		//- .container{
+		//- 	padding-top: 0px;
+		//- 	//- z-index: 0;
+		//- }
+
+		button{
+			z-index: 0;
+		}
+
+		#navigation{
+			width: 100%;
+		}
+		
+		#imageDiv{
+			float: left;
+			width: 400px;
+		}
+
+		#imageDiv2{
+			width: 100%;
+		}
+
+		#uplineInfo{
+			float: left;
+			width: 560px;
+		}
+		#upload{
+			width: 960px;
+		}
+		
+		
+		@media screen and (max-width:3000px){
+			#navigation{
+				width: 100%;
+			}
+			#imageDiv{
+				width: 40%;
+			}
+			img{
+				width: 30vw;
+			}
+			#uplineInfo{
+				width: 60%;
+			}
+		}
+
+		@media screen and (max-width:1300px){  //- for big tabs down to screens with width greater than 320px
+			#navigation{
+				width: 90vw;
+				margin-left: 2vw;
+				margin-right: 2vw;
+			}
+			#imageDiv{
+				width: 100%;
+			}
+			img{
+				width: 100%;
+			}
+			#uplineInfo{
+				width: 100%;
+			}
+
+		}
+		@media screen and (max-width:400px){
+			#navigation{
+				width: 400px;
+			}
+			
+			#imageDiv{
+				width: 400px;
+			}
+			img{
+				width: 350px;
+			}
+			#uplineInfo{
+				width: 400px;
+			}
+		}
+
+	
+		//- if imageDiv2 is rendered, the following style would be used!
+
+		@media screen and (max-width:3000px){
+			#navigation{
+				width: 100%;
+			}
+			#imageDiv2{
+				width: 100%;
+			}
+			#uplineInfo{
+				width: 100%;
+			}
+		}
+
+		@media screen and (max-width:1300px){  //- for big tabs down to screens with width greater than 320px
+			#navigation{
+				width: 90vw;
+				margin-left: 2vw;
+				margin-right: 2vw;
+			}
+			#imageDiv2{
+				width: 100%;
+			}
+			#uplineInfo{
+				width: 100%;
+			}
+
+		}
+		@media screen and (max-width:400px){
+			#navigation{
+				width: 400px;
+			}
+			
+			#imageDiv2{
+				width: 400px;
+			}
+			#uplineInfo{
+				width: 400px;
+			}
+		}
+
+
+	h2 Payment Page
+
+	if user
+		if user.inbox != ''
+			a.btn.btn-info(href='/users/inbox' style='font-size: 1.5em') Please click to check your inbox immediately
+			br
+			br
+				
+		if reserved == 'sent'
+			.row(style='padding-top: 0px;')
+				.col-lg-12.box
+					h4.alert.alert-info Please make your transaction on time before someone else beats you to it!
+					br
+					//- img.col-sm-12.col-xs-12.col-md-3.col-lg-3(src='/img/unnamed.jpg' width='120px' height='120px' class='img-circle')
+					p Id : 
+						b#uplineId #{uplineId}
+
+					p Upline Username : 
+						b#uplineUsername #{uplineUsername}
+
+					p Upline Name : 
+						b#uplinName #{uplineFirstname} #{uplineLastname}
+
+					p Phone Number : 
+						b#uplinePhone #{uplinePhone}
+
+					if uplineBankDetails
+						for data, i in uplineBankDetails
+							p Account Holder : 
+								b#accountHolder #{data.accountHolder}
+							p Bankname : 
+								b#bankname #{data.bankname}
+							p Account Number : 
+								b#accountNumber #{data.accountNumber}
+					span Amount available for reservation : 
+						b#realAmount(style='color: white; font-size: 20px;') #{realAmount}
+					input.form-control#amountInput(type='text' placeholder='Enter reservation amount' style='color: black; font-size: 15px')
+					span(id='amountInput_error_message' class='error' style='color:red; font-size: 1.2em;')
+					br
+					br
+					input.btn.btn-large.btn-danger#pay.col-sm-12.col-xs-12(type='button' value='proceed to payment')
+
+		else if reserved == 'navigation'
+			div.row#navigation
+				div.well
+					div.well-heading
+						if image == ''
+							h4.alert.alert-info
+							b 1. Upload your proof of payment. Such as, bank teller, screenshot of implemented transactions(atm, mobile-transfer e.t.c.).
+							b 2. You have 16HOURS to make your payment to avoid any form of embarassment from your upline and the Admin. Please comply
+							b 3. Make sure the IMAGE is CLEAR enough and LEGITIMATE else, you stand a chance of not being approved by your upline.
+							b 4. CALL your upline before making any payment.
+							b 5. If by chance you don't get approved by your upline on time, your Proof Of Payment might be your saving grace.
+							b 6. when it is discovered that your proof of payment is fake and your upline didn't approve of your payment, then it becomes your fault.
+							b 7.Please follow all instructions generously to ensure the smooth running of the system. Cheers...
+
+						else
+							h4.alert.alert-info Call your upline and make sure he/she approves you on time, so you'll be up for reservation in no time.
+					hr
+					div.well-body
+						if pop == 'yes'
+							div#imageDiv
+								h4 Uploaded Image
+								img(src='/uploads/'+image, alt='upload file')
+						else if pop == 'no'
+							div#imageDiv2
+								p Upload a proof of payment befor your time elapses!
+						div#uplineInfo
+							div
+								p Id : 
+									b#uplineId #{uplineId}
+							div
+								p Upline Username : 
+									b#uplineUsername #{uplineUsername}
+
+							div
+								p Upline Name : 
+									b#uplinName #{uplineFirstname} #{uplineLastname}
+
+							div
+								p Phone Number : 
+									b#uplinePhone #{uplinePhone}
+
+							if uplineBankDetails
+								for data, i in uplineBankDetails
+									p Account Holder : 
+										b#accountHolder #{data.accountHolder}
+									p Bankname : 
+										b#bankname #{data.bankname}
+									p Account Number : 
+										b#accountNumber #{data.accountNumber}
+							br
+							hr
+						div#upload
+							if !image
+								form(method='POST', enctype='multipart/form-data' action='/users/payment/upload')
+									.form-group
+										h4 Upload Image
+										.row
+											.col-md-6
+												input.form-control(type='file', name='image', required, placeholder='Upload a file please') 
+												input(type='hidden', name='data', value=coupleId+'/'+uplineId+'/'+amount)
+											.col-md-6
+												input.form-control.btn.btn-primary(type='submit', name='submit', value='Upload')
+		else if reserved == 'none'
+			div.alert.alert-info(style='color: blue; font-size: 1.5em;')
+				p Sorry, you do not have any outstanding payment for now. 
+					a(href='/users/reservation')
+						b Click to reserve now
+			
+
+	div.modal.fade(tabindex="-1" id="myModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true")
+			div.modal-dialog
+				div.modal-content
+					div.modal-header
+						button.close(data-dismiss="modal" aria-hidden="true") &times;
+						h3.modal-title(id="myModalLabel") Reservation Amount status Update
+					div.modal-body 
+						.well
+							p#error.alert.alert-info
+							input.btn.btn-large.btn-block.btn-primary#okay(type="button" class="btn btn-primary" value='Ok')
+					div.modal-footer
+						input.btn.btn-default(type="button" data-dismiss="modal" value='Close')
+
+	script.
+
+		//$(function(){
+			$('#amountInput_error_message').hide();
+
+			$('#pay').on('click', function(e){
+				e.preventDefault();
+				var uplineId = $('#uplineId').text();
+				var realAmount = $('#realAmount').text();
+				var realAmountCopy = $('#realAmount').text();
+				var uplineUsername = $('#uplineUsername').text();
+				var amountInput = $('#amountInput').val();
+				var newAmnt ;
+
+				var pattern = /^[0-9]+$/i;
+
+				if(!amountInput.match(pattern)){
+					$('#amountInput_error_message').html('Reservation value can only contain numbers');
+					$('#amountInput_error_message').show();
+					err_amountInput = true;
+				}else{
+
+					$('#amountInput_error_message').hide();
+
+					if(realAmount >= 100){
+
+						if((realAmount - amountInput) == 0 && amountInput >= 100 && amountInput <= 1000){
+							//submit();
+							//alert('you cleared quite the stack');
+							//- $('#error').html('you cleared quite the stack');
+							//- $('#myModal').modal();
+							submitReservation(amountInput, uplineId, realAmount)
+
+						}else if ((realAmount - amountInput) >= 100 && amountInput >= 100 && amountInput <= 1000){
+							//submit();
+							//alert('you cleared part');
+							//- $('#error').html('you cleared part');
+							//- $('#myModal').modal();
+							submitReservation(amountInput, uplineId, realAmount)
+						}else if((realAmount - amountInput) < 100 && (realAmount - amountInput) != 0 || amountInput < 100){
+							//displayError();
+							//alert('amount left can\'t be less than 20000!');
+							$('#error').html('amount left can\'t be less than C100!');
+							$('#okay').hide();
+							$('#myModal').modal();
+						}else if(amountInput == ''){
+							//alert('can\'t be empty');
+							$('#error').html('can\'t be empty');
+							$('#okay').hide();
+							$('#myModal').modal();
+						}
+
+					}else{
+						//$('#error').html('Sorry, the user has completely been reserved. Kindly pick someone else. Thank you.');
+						alert('Sorry, the user has completely been reserved. Kindly pick someone else. Thank you.');
+						window.location.href = '/users/reservation';
+
+					}
+			}
+
+			});
+
+			function submitReservation(amountInput, uplineId, realAmount){
+				$.post('/users/submitreservation', {amountInput:amountInput, uplineId: uplineId, realAmount: realAmount}, function(response){
+
+					if(response.currentRemainingAmount == 0 || response.currentRemainingAmount < 100){
+
+						//Refresh
+						$('#error').html(response.status);
+						$('#myModal').modal();
+						$('#okay').on('click', function(e){
+							e.preventDefault();
+							window.location.href = '/users/reservation';
+						});
+
+					}else if(amountInput > response.currentRemainingAmount && response.currentRemainingAmount >= 100){
+						$('#realAmount').text(response.currentRemainingAmount);
+						$('#error').html(response.status);
+						$('#okay').hide();
+						$('#myModal').modal();
+					}else{
+						$('#error').html(response.status);
+						$('#myModal').modal();
+						$('#okay').on('click', function(e){
+							e.preventDefault();
+							window.location.href = '/users/transactions';
+						});
+
+					}
+
+				});
+
+			}
+		//});

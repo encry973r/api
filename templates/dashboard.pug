@@ -1,19 +1,52 @@
 extends layout
 
 block content
-	h1 dashboard
+	style.
+		.panel-heading{
+		background-color: red;
+		}
 
 	if user
+		h1 dashboard
+		
+		if user.inbox != ''
+			a.btn.btn-info(href='/users/inbox' style='font-size: 1.5em') Please click to check your inbox immediately
+			br
+			br
+
 		div.row
 			div.col-lg-3.col-md-3.col-sm-12.col-xs-12
 				div.well.text-center(style='background-color: #337ab7; color: white;')
 					p Amount reserved 
-						h3 N#{input}
+						h3 C#{reserved}
 			div.col-lg-3.col-md-3.col-sm-12.col-xs-12
 				div.well.text-center(style='background-color: #449d44; color: white')
 					p Amount received 
-						h3 N#{received}
+						h3 C#{received}
 			div.col-lg-3.col-md-3.col-sm-12.col-xs-12
 				div.well.text-center(style='background-color: #5bc0de; color: white')
 					p Amount remaining
-						h3 N#{remainder}
+						h3 C#{remainder}
+		.row
+			.col-lg-12
+				i(style='font-size: 1.5em;')
+					a(href='/users/reservation') Click to go to list
+				br
+				br
+
+		div.row
+			.col-lg-12
+				.panel.panel-default
+					.panel-heading
+						.panel-title
+							b LATEST INFORMATION
+					.panel-body
+						ul.list-group
+							li.list-group-item 1. Click on drop down menu in your Dashboard or click 
+								a(href='/users/reservation') here
+							li.list-group-item 2. Futher click reservations in the drop down menu
+							li.list-group-item 3. Select from the list the individual whom you would like to make a donation to and reserve
+							li.list-group-item 4. Enter your selected amount up for donation
+							li.list-group-item 5. Make donation, call up your upline(the person you just reserved) before payment, upload proof of payment(a screenshot of mobile transaction, a bank tell e.t.c.) and finally call upline to approve and acknowledge the donation.
+							li.list-group-item 6. Once donation has being approved your name would automatically be up for reservation in the next reservation list release within the stipulated time frame.
+							li.list-group-item Note:  donations are to be made within the stipulated time set by the system. Failure to make donations within the stipulated time would result to automatic suspension for 3 days. Hence if you do not have money, do not reserve anyone. Thank you.

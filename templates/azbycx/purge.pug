@@ -1,0 +1,28 @@
+extends layout
+
+block content
+	if user.superAdmin == true
+		style.
+			.btn{
+				height: 60px;
+				//- width: 100px;
+				border-radius: 0px;
+			}
+
+		.row
+			.col-lg-6.col-lg-offset-3.text-center
+				h3 Purge unserious people
+				br
+				br
+				input#purge.btn.btn-danger.btn.btn-block(type='button' value='PURGE' style='font-size: 2em;')
+
+	script.
+		$(document).ready(function(){
+			$('#purge').on('click', function(){
+				//e.preventDefault();
+
+				$.post('/medusa123/purge', function(response){
+					alert(response.msg);
+				});
+			})
+		})

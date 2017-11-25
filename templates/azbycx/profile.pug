@@ -1,0 +1,95 @@
+extends layout
+
+block content
+
+	h3 Your Profile
+
+	div.row
+		if user.profileUpdated == 'false'
+			h3.alert.alert-info You need to update your profile info so as to enable you receive reservations.
+		div.col-lg-6
+			div.well
+				div.well-heading
+					h4 Current Profile Info
+				hr
+				div.well-body
+					div.row
+						div.col-lg-12
+							if user
+								h5 Name : 
+									b(style='color: green') #{user.firstname}  #{user.lastname} 
+								h5 Username : 
+									b(style='color: green') #{user.username}
+								h5 Email : 
+									b(style='color: green') #{user.email}
+								h5 Telephone : 
+									b(style='color: green') #{user.phone}
+								if bankDetails
+									each detail, i in bankDetails
+										h5 Account Holder Name : 
+											b(style='color: green') #{detail.accountHolder}
+										h5 Account Number : 
+											b(style='color: green') #{detail.accountNumber}
+										h5 Bankname : 
+											b(style='color: green') #{detail.bankname}
+
+		if user.profileUpdated == 'false'
+			div.col-lg-6
+				div.well
+					div.well-heading
+						h4 Edit Profile Info
+					hr
+					div.well-body
+						form(method='POST', action='/medusa123/profile')
+							.form-group
+								label Email
+								input.form-control(type='email', name='email', required, placeholder='Enter email')
+							.form-group
+								label Telephone
+								input.form-control(type='text', name='phone', required, placeholder='Enter phone number')
+							.form-group
+								label Your firstname
+								input.form-control(type='text', name='firstname', required, placeholder='Enter your firstname')
+							.form-group
+								label Your lastname
+								input.form-control(type='text', name='lastname', required, placeholder='Enter your lastname')
+							hr
+							h5 Bank details
+							.form-group
+								label Account Holder firstname
+								input.form-control(type='text', name='acctFirstName', required, placeholder='Enter Account firstname')
+							.form-group
+								label Account Holder lastname
+								input.form-control(type='text', name='acctLastName', required, placeholder='Enter Account lastname')
+							.form-group
+								label Account Number
+								input.form-control(type='text', name='acctNumber', required, placeholder='Enter account number')
+							.form-group
+								label Bankname
+								input.form-control(type='text', name='bankname', required, placeholder='Enter bankname')
+							
+							input.btn.btn-primary.btn-large.btn-block(type='submit', name='submit', value='Save')
+								
+		else
+			div.col-lg-6
+				div.well
+					div.well-heading
+						h4 Edit Profile Info
+					hr
+					div.well-body
+						form(method='POST', action='/medusa123/profile')
+							.form-group
+								label Account Holder firstname
+								input.form-control(type='text', name='acctFirstName', required, placeholder='Enter Account firstname')
+							.form-group
+								label Account Holder lastname
+								input.form-control(type='text', name='acctLastName', required, placeholder='Enter Account lastname')
+							.form-group
+								label Account Number
+								input.form-control(type='text', name='acctNumber', required, placeholder='Enter account number')
+							.form-group
+								label Bankname
+								input.form-control(type='text', name='bankname', required, placeholder='Enter bankname')
+							
+							input.btn.btn-primary.btn-large.btn-block(type='submit', name='submit', value='Save')
+

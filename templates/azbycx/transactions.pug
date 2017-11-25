@@ -1,69 +1,13 @@
 extends layout
 
 block content
-	style.
-		table{
-			text-align: center;
-		}
 	if user
 		input#hidden(type='hidden' value=user._id)
-
-		if outgoing != ''
-			h4.text-center Outgoing transactions
-			table.table.table-bordered
-				thead 
-					tr
-						th index
-						//- th id
-						th Upline Name
-						th Phone
-						th Bankname
-						th Account Holder
-						th Account no
-						th Amount(N)
-						th Status
-						th Time left(mins)
-				tbody
-					each out, i in outgoing
-						tr
-							td= i+1
-							td 
-								p #{out.uplineFirstname} #{out.uplineLastname}
-							td= out.phone
-							each bank, i in out.bank
-								td= bank.bankname
-								td= bank.accountHolder
-								td= bank.accountNumber
-								td= out.amount
-							if out.confirmation_flag == 'Pending'
-								td(style='color: black')= out.confirmation_flag
-							else if out.confirmation_flag == 'Declined'
-								td(style='color: #d9534f')= out.confirmation_flag
-							else
-								td(style='color: green')= out.confirmation_flag
-							if out.deadline >= 0 && out.confirmation_flag == 'Pending'
-								td(style='color: green')
-									b= out.deadline
-							else if out.confirmation_flag == 'Approved'
-								td(style='color: green')
-									b Approved
-							else if out.confirmation_flag == 'Declined'
-								td(style='color: green')
-									b Declined
-							else
-								td(style='color: red') time exceeded
-						if out.deadline >= 0 && out.pop == 'no'
-							a.btn.btn-success(href='/users/payment') Click to upload proof of payment
-							br
-							br
-
-		else
-			p.alert.alert-info No outgoing transaction for now
 
 		if incoming != ''
 			h4.text-center Incoming transactions
 			table.table.table-bordered(style='text-align: center')
-				thead
+				thead 
 					tr
 						th index
 						th Downline Username
@@ -83,6 +27,7 @@ block content
 								p #{inc.downlineFirstname}  #{inc.downlineLastname} 
 							td= inc.phone
 							td= inc.amount
+							//- Never change this value to 'suspended' for any reason so as to avoid breakage!		
 							if inc.confirmation_flag == 'Pending'
 								if inc.deadline > 0
 									td#stateApprove
@@ -133,7 +78,7 @@ block content
 								td no pop uploaded
 							else
 								td(style='color: green')
-									b Approved
+									b= inc.pop
 		else
 			p.alert.alert-info No incoming transaction for now
 
@@ -169,6 +114,7 @@ block content
 					input.btn.btn-default(type="button" data-dismiss="modal" value='Close') 
 
 
+		
 	script.
 		$(document).ready(function(){
 			
@@ -190,7 +136,7 @@ block content
 				var approvalAmount = collection[1];
 				var coupleIndex = collection[2];
 				var coupleId = collection[3];
-				var uplineIndex = collection[4];
+				var uplineIndex = collection[4];//imageName
 				var imageName = collection[5];
 				//alert(duname+approvalAmount+coupleIndex+coupleId+uplineIndex);
 
@@ -209,7 +155,6 @@ block content
 									$('#approve').hide();	//won't be needed if socket.io is implemented
 									$('#decline').hide();	//won't be needed if socket.io is implemented
 									$('#stateApprove').css('color', 'green').html('Approved'); //won't be needed if socket.io were to be implemented
-									window.location.href = '/users/transactions';
 								},
 								error: (err)=>{
 									console.log(err);
@@ -235,6 +180,7 @@ block content
 				var coupleIndex = collection2[2];
 				var coupleId = collection2[3];
 				var uplineIndex = collection2[4];
+				var imageName = collection2[5];
 				//alert(duname+approvalAmount+coupleIndex+coupleId+uplineIndex);
 
 					$('#declineBtn').on('click', function(e){
@@ -245,7 +191,7 @@ block content
 						$.ajax({
 								type: 'POST',
 								url: '/users/declinedownline',
-								data: {duname: duname, approvalAmount: approvalAmount, myId: myId, coupleIndex: coupleIndex, coupleId: coupleId, uplineIndex: uplineIndex},
+								data: {duname: duname, approvalAmount: approvalAmount, myId: myId, coupleIndex: coupleIndex, coupleId: coupleId, uplineIndex: uplineIndex, imageName: imageName},
 								success: (response)=>{
 									$('#declineSuccess').html(response.msg);
 									$('#declineSuccess').show();

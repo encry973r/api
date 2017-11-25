@@ -1,0 +1,18 @@
+extends layout
+
+block content
+	h1 Inbox
+
+	if user
+
+		if inbox != ''
+			each inb, i in inbox
+				if inb.uplineId == user._id
+					p.alert.alert-info
+						b The admin is looking into the transaction between you and your downline(s). Be rest assured that your downline(s) POP would be scrutinized before any final decision is made. Thanks.
+					
+				else
+					p.alert.alert-info
+						b The admin is looking into the transaction between you and your upline. Be rest assured that your POP would be scrutinized before any final decision is made. thanks.
+		else
+			h4.alert.alert-info You have no messages for now

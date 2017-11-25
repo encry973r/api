@@ -1,14 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const date = new Date();
-
-const day = date.getDate();
-const hour = date.getHours();
-const minutes = date.getMinutes();
-const regDate = day + '/' + hour + '/' + minutes;
-
-
 ////////SUB-DOCUMENTS///////////////////////////////////////////
 var BankDetails = new Schema({
 		accountHolder: {
@@ -35,7 +27,12 @@ var OutgoingReservations = new Schema({
 	phone: String,
 	bank: [BankDetails],
 	amount: Number,
-	deadLine: Date,
+	deadline: Number,		//time 
+	imageName: String,
+	pop: {
+		type: String,
+		default: 'no'
+	},
 	confirmation_flag: {
 		type: String,
 		default: 'Pending'
@@ -48,15 +45,37 @@ var IncomingReservations = new Schema({
 	downlineLastname: String,
 	phone: String,
 	amount: Number,
-	deadLine: Date,
+	deadline: Number,
+	imageName: String,
+	pop: {
+		type: String,
+		default: 'no'
+	},
 	confirmation_flag: {
 		type: String,
 		default: 'Pending'
+	},
+	declined: {
+		type: Boolean,
+		default: false
 	},
 	coupleIndex: Number, //this is equivalent to the index mongo creates in the outgoing transaction of the downline.
 	coupleId: String	//this is equivalent to the id mongo creates in the outgoing transaction of the downline. I only copied it on here
 	//it binds this incoming transaction(of this upline) to its corresponding outgoing transaction of downline.
 
+});
+
+var Inbox = new Schema({
+	uplineId: String,
+	downlineId: String,
+	message: String
+});
+
+var MessageSchema = new Schema({
+	senderUsername: String,
+	subject: String,
+	message: String,
+	rectified: Boolean
 });
 ////////////////////////////////////END OF SUB-DOCUMENTS
 
@@ -97,6 +116,8 @@ var UserSchema = new Schema({
 		required: [true, "Enter password please"]
 	},
 
+	secret: String,
+
 	profileUpdated: {
 		type: String,
 		default: false
@@ -106,11 +127,31 @@ var UserSchema = new Schema({
 
 	incomingReservations: [IncomingReservations],				//Incoming reservations
 
-	amountRemaining: {
-		type: Number,
-		default: 0.0
+	messageSchema: [MessageSchema],
+
+	inbox: [Inbox],
+
+	suspended: {
+		type: Boolean,
+		default: false
 	},
+
+	suspensionTime: {
+		type: Number,
+		default: 0
+	},
+
+	amountReserved: {
+		type: Number,
+		default: 0
+	},
+
 	amountReceived: {
+		type: Number,
+		default: 0
+	},
+	
+	amountRemaining: {
 		type: Number,
 		default: 0
 	},
@@ -120,10 +161,19 @@ var UserSchema = new Schema({
 	 	default: 0
 	 },
 
-	 admin: {								//User previlege ('1' for admin(s), '0' for normal user(s))
-	 	type: Number,
-	 	default: 0
-	 }
+	admin: Boolean,			//User previlege (true for admin(s), false for normal user(s))
+
+	superAdmin: Boolean,			//true for superAdmin, false for all other users including ordinary admin
+
+	transactionsDeclined: {
+		type: Number,
+		default: 0
+	},
+
+	purged: {
+		type: Boolean,
+		default: false
+	}
 });
 
 var User = mongoose.model('User', UserSchema);

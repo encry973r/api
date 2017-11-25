@@ -1,0 +1,30 @@
+extends layout
+
+block content
+	input#testifier(type='hidden' value=user.username)
+
+	h1 Enter your testimony
+
+	p#msg.alert.alert-info
+
+	#form-group
+		label Message :
+		textarea.form-control#testimony(name='testimony' style='resize:none', cols='23', rows='5', placeholder='Enter testimony here, and click Send to send...' required='required')
+		br
+	input.btn.btn-primary.btn-block.btn-large#send(type='button', value='Send')
+
+
+	script.
+		$(document).ready(function(){
+			$('#msg').hide();
+			$('#send').on('click', function(e){
+				e.preventDefault();
+				var testimony = $('#testimony').val();
+				$('#testimony').text('');
+
+				$.post('/users/testimony', {testimony: testimony}, function(response){
+					$('#msg').html(response.msg).fadeIn(2000);
+				});
+
+			})
+		})

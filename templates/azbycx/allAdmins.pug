@@ -1,0 +1,65 @@
+extends layout
+
+block content
+	h1 Admins List
+
+	if admins != ''
+		if user.profileUpdated == 'false'
+			h3.alert.alert-info You need to update your profile info so as to enable you receive reservations.
+		table.table.table-bordered
+			thead
+				tr
+					th id
+					th username
+					th amount received
+					th amount remaining
+					th Firstname
+					th Lastname
+					th Phone
+					if user.superAdmin == true
+						th Insert amount
+						th Action
+			tbody
+				each admin, i in admins
+					tr
+						td= admin._id
+						td= admin.username
+						td= admin.amountReceived
+						td= admin.amountRemaining
+						td= admin.firstname
+						td= admin.lastname
+						td= admin.phone
+						if user.superAdmin == true
+							td 
+								input.form-control(type='text', id=i, maxlength='6', minlength='5', placeholder='enter amount remaining...')
+							td
+								input.btn.btn-primary(type='button', value='Update', data-id=admin._id+'/'+i)
+	else
+		p.alert.alert-info No registered Admin for now
+
+	script.
+		$(document).ready(function(){
+
+			$('.btn').on('click', function(e){
+				e.preventDefault();
+				$target = $(e.target);
+				var data = ($target.attr('data-id'));
+				data = data.split('/');
+				var admin_id = data[0];
+				var index = data[1];
+				var amountInput = $('#'+index).val();
+
+				if(amountInput > 1000){
+					alert('Enter amount less than or equal C1,000 to prevent the system from crashing');
+					$('#'+index).text('');
+					return; //does nothing
+				}else{
+					$.post('/medusa123/admins/update-amount-remaining', {amountInput: amountInput, admin_id: admin_id}, function(response){
+						alert(response.msg);
+						window.location.href = '/medusa123/admins';
+					});
+				}
+
+			});
+
+		});

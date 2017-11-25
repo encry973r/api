@@ -1,0 +1,99 @@
+extends layout
+
+block content
+	style.
+		button{
+			border-radius: 0px;
+		}
+		
+	h1 Reservation List
+
+	if user
+		if current_state.state == 'hide'
+			if user.superAdmin == true
+				input.btn.btn-success(type='button' id='publish' value='Publish list' data-toggle="modal" data-target="#publishModal")
+			br
+			br
+			table.table.table-bordered
+				thead
+					tr
+						th id
+						th username
+						th amount remaining
+						th Firstname
+				tbody
+			
+		else
+			if user.superAdmin == true
+				input.btn.btn-danger(type='button' id='withdraw' value='Withdraw list' data-toggle="modal" data-target="#withdrawModal")
+
+			br
+			br
+			table.table.table-bordered
+				thead
+					tr
+						th id
+						th username
+						th amount remaining
+						th Firstname
+				tbody
+					if reserves
+						each reserve, i in reserves
+							tr
+								td= reserve._id
+								td= reserve.username
+								td= reserve.amountRemaining
+								td= reserve.firstname
+			
+			
+		
+
+		div.modal.fade(tabindex="-1" id="publishModal" role="dialog" aria-labelledby="myModalLabel1" aria-hidden="true")
+			div.modal-dialog
+				div.modal-content
+					div.modal-header
+						button.close(data-dismiss="modal" aria-hidden="true") &times;
+						h4.modal-title(id="myModalLabel1") Publish List
+					div.modal-body 
+						.well
+							p#top Are you sure about this?
+							input.btn.btn-large.btn-block.btn-success#publishBtn(type="button" value='Publish List')
+					div.modal-footer
+						input.btn.btn-default(type="button" data-dismiss="modal" value='Close') 
+
+		div.modal.fade(tabindex="-1" id="withdrawModal" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true")
+			div.modal-dialog
+				div.modal-content
+					div.modal-header
+						button.close(data-dismiss="modal" aria-hidden="true") &times;
+						h4.modal-title(id="myModalLabel2") Withdraw List
+					div.modal-body 
+						.well
+							p#top Are you sure about this?
+							input.btn.btn-large.btn-block.btn-danger#withdrawBtn(type="button" value='Withdraw List')
+					div.modal-footer
+						input.btn.btn-default(type="button" data-dismiss="modal" value='Close')
+
+
+		script.
+			$(document).ready(function(){
+
+				$('#publishBtn').on('click', function(){
+					$.post('/medusa123/publish', function(response){
+						if(response.msg == 'success'){
+							window.location.href = '/admin/reservation';
+						}
+
+					});
+
+				});
+
+				$('#withdrawBtn').on('click', function(){
+					$.post('/medusa123/withdraw', function(response){
+						if(response.msg == 'success'){
+							window.location.href = '/admin/reservation';
+						}
+					});
+
+				});
+			});

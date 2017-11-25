@@ -1,3 +1,64 @@
 extends layout
+
 block content
-	h1 support
+	if user
+		input#testifier(type='hidden' value=user.username)
+
+		h1 Support
+
+		if user.inbox != ''
+				a.btn.btn-info(href='/users/inbox' style='font-size: 1.5em') Please click to check your inbox immediately
+				br
+				br
+
+		p#msg.alert.alert-info
+
+			#form-group
+				label Subject :
+				input.form-control#subject(name='subject', type='text', placeholder='Subject' required='required')
+			#form-group
+				label Message :
+				textarea.form-control#content(name='content' style='resize:none', cols='23', rows='5', placeholder='Enter message' required='required')
+				br
+			input.btn.btn-primary.btn-block.btn-large#send(type='button', value='Send')
+			input(type='hidden' name='_csrf' value=csrfToken)
+
+
+	script.
+		$(function(){////word.replace(/[<>]/g, "")
+			$('#msg').hide();
+			$('#send').on('click', function(e){
+				//e.preventDefault();
+				var subject = $('#subject').val();
+				var content =  $('#content').val();
+
+				subject = subject.replace(/[<>#()@*\s]/g, "");
+				content = content.replace(/[<>#()@*]/g, "");
+
+				if(subject == '' || content == ''){
+					$('#msg').html('Fill all fields please...')
+					$('#msg').show();
+				}else{
+
+					//- $.post('/users/support', {subject: subject, content: content}, function(response){
+					//- 	alert(response.msg);
+					//- 	window.location.href = '/users/support';
+					//- 	//$('#msg').html(response.msg).show();
+					//- });
+					$.ajax({
+							type: 'POST',
+							url: '/users/support',
+							data: {subject: subject, content: content},
+							success: (response)=>{
+								alert(response.msg);
+								window.location.href = '/users/support';
+								//$('#msg').html(response.msg).show();
+							},
+							error: (err)=>{
+								console.log(err);
+							}
+					});
+				}
+
+			})
+		})

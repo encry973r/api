@@ -1,0 +1,170 @@
+extends layout
+
+block content
+	if user
+		style.
+			th{
+				text-align: center;
+			}
+			.btn{
+				border-radius: 0px;
+			}
+		
+		h4.text-center Purged Accounts
+
+		if filters != ''
+
+			table.table.table-bordered(style='text-align: center')
+				thead
+					tr
+						th Username
+						th Firstname
+						th Lastname
+						th Upline
+						th Pop
+						th ApproveDownline
+						th DeclineDownline
+				tbody
+					each filter, i in filters
+						tr
+							td= filter.username
+							td= filter.firstname
+							td= filter.lastname
+							td= filter.upline
+							td
+								input.btn.btn-primary#pop(type='button' value='view pop' data-toggle="modal" data-target="#popModal")
+								input#hide(type='hidden' value=filter.username+'/'+filter.approvalAmount+'/'+filter.coupleIndex+'/'+filter.coupleId+'/'+filter.uplineId+'/'+filter.image+'/'+filter.upline)
+								div.modal.fade(tabindex="-1" id="popModal" role="dialog" aria-labelledby="myModalLabel3" aria-hidden="true")
+									div.modal-dialog
+										div.modal-content
+											div.modal-header
+												button.close(data-dismiss="modal" aria-hidden="true") &times;
+											div.modal-body
+												img(src='/uploads/'+filter.image,  alt='uploaded image' width='500px' height='500px' data-id='image')
+											div.modal-footer
+												input.btn.btn-default(type="button" data-dismiss="modal" value='Close') 
+
+							td#stateApprove
+								input.btn.btn-primary#approve(type='button' value='approve' data-toggle="modal" data-target="#approveModal")
+								div.modal.fade(tabindex="-1" id="approveModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true")
+									div.modal-dialog
+										div.modal-content
+											div.modal-header
+												button.close(data-dismiss="modal" aria-hidden="true") &times;
+												h4.modal-title(id="myModalLabel") Approve Transaction
+											div.modal-body 
+												.well
+													p#top Are you sure about this? As this can not be undone
+													p#error
+													p.alert.alert-success#approveSuccess
+													input.btn.btn-large.btn-block.btn-primary#approveBtn(type="button" class="btn btn-primary" value='Confirm')
+											div.modal-footer
+												input.btn.btn-default(type="button" data-dismiss="modal" value='Close') 
+							td#stateDecline
+								input.btn.btn-danger#decline(type='button' value='Decline' style='margin-left:10px' data-toggle="modal" data-target="#declineModal")
+								div.modal.fade(tabindex="-1" id="declineModal" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true")
+									div.modal-dialog
+										div.modal-content
+											div.modal-header
+												button.close(data-dismiss="modal" aria-hidden="true") &times;
+												h4.modal-title(id="myModalLabel2") Decline Transaction
+											div.modal-body 
+												.well
+													p#top Are you sure about this? As this can not be undone
+													p#error
+													p.alert.alert-success#declineSuccess
+													input.btn.btn-large.btn-block.btn-danger#declineBtn(type="button" class="btn btn-primary" value='Decline')
+											div.modal-footer
+												input.btn.btn-default(type="button" data-dismiss="modal" value='Close') 
+
+					
+		else
+			p.alert.alert-info No purged account for now
+
+	script.
+		$(document).ready(function(){
+			$('#approve').on('click', function(e){
+				e.preventDefault();
+
+				var collection = $('#hide').val();
+				collection = collection.split('/');
+
+				var duname = collection[0];
+				var approvalAmount = collection[1];
+				var coupleIndex = collection[2];
+				var coupleId = collection[3];
+				var uplineId = collection[4];
+				var image = collection[5];
+				var uplineUsername = collection[6];
+				//alert(duname+approvalAmount+coupleIndex+coupleId);
+				
+					$('#approveBtn').on('click', function(e){
+						e.preventDefault();
+						$('#approveBtn').hide();
+						$('#top').hide();
+						
+						e.preventDefault();
+						$.ajax({
+								type: 'POST',
+								url: '/medusa123/approve-purged',
+								data: {duname: duname, approvalAmount: approvalAmount, uplineId: uplineId , coupleIndex: coupleIndex, coupleId: coupleId, image: image, uplineUsername: uplineUsername},
+								success: (response)=>{
+									$('#approveSuccess').html(response.msg);
+									$('#approveSuccess').show();
+									$('#approve').hide();	//won't be needed if socket.io is implemented
+									$('#decline').hide();	//won't be needed if socket.io is implemented
+									$('#stateApproved').css('color', 'green').html('Approved'); //won't be needed if socket.io were to be implemented
+									//alert(response.msg);
+								},
+								error: (err)=>{
+									console.log(err);
+								}
+						});
+
+
+						});
+				 	});
+			
+			$('#decline').on('click', function(e){
+				e.preventDefault();
+
+				var collection = $('#hide').val();
+				collection = collection.split('/');
+
+				var duname = collection[0];
+				var approvalAmount = collection[1];
+				var coupleIndex = collection[2];
+				var coupleId = collection[3];
+				var uplineId = collection[4];
+				var image = collection[5];
+				var uplineUsername = collection[6];
+
+					$('#declineBtn').on('click', function(e){
+						e.preventDefault();
+						$('#declineBtn').hide();
+						$('#top').hide();
+						//alert(duname+approvalAmount+coupleIndex+coupleId);
+						
+						$.ajax({
+								type: 'POST',
+								url: '/medusa123/decline-purged',
+								data: {duname: duname, approvalAmount: approvalAmount, uplineId: uplineId, coupleIndex: coupleIndex, coupleId: coupleId, image: image, uplineUsername: uplineUsername},
+								success: (response)=>{
+									$('#declineSuccess').html(response.msg);
+									$('#declineSuccess').show();
+									$('#approve').hide();	//won't be needed if socket.io is implemented
+									$('#decline').hide();	//won't be needed if socket.io is implemented
+									$('#stateDeclined').css('color', '#d9534f').html('Declined'); //won't be needed if socket.io is 
+									//window.location.href='/users/transactions';
+
+								},
+								error: (err)=>{
+									console.log(err);
+								}
+						});
+
+
+					});
+			});
+
+		});

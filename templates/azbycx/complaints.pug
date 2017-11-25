@@ -1,0 +1,27 @@
+extends layout
+
+block content
+
+	if complaints != ''	
+
+		h1(style='text-align: center') Complaints List
+		each complaint, i in complaints
+			div.row
+				div.col-lg-6.col-lg-offset-3
+					div.well(style='background-color: #5bc0de')
+						div.well-heading
+							h5(style='color: white')  ##{i+1} Subject - #{complaint.subject}
+						hr
+						div.well-body
+							div.row
+								div.col-lg-12(style='color:white')
+										h4 Sender : 
+											b #{complaint.sender}
+										hr
+										h5 Content : 
+											b #{complaint.content}
+										hr
+										input#reply.btn.btn-primary(type='button' value='Reply' style='margin-left: 1%;width: 48%')
+										input#discard.btn.btn-danger(type='button' value='Discard' style='margin-left: 1%; width: 48%')
+	else
+		p.alert.alert-info No complaints for now

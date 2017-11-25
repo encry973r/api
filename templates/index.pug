@@ -6,50 +6,272 @@ html
 		link(rel='stylesheet' href='/css/style.css')
 
 		style.
-			body {background-image: url("../img/land.jpg");
-					background-repeat: no-repeat;
-					background-attachment: fixed;
-					width: auto;
-					height: auto;
-					background-position: center;
+			html,
+			body,
+			#banner{
+				height: 100%;
+				}
+
+			//- html{
+			//- 	width: 100%;
+			//- 	margin: 0px;
+			//- 	overflow: auto;
+			//- }
+
+			header {
+			    margin-bottom: 0px;
+			    position: fixed;
+			    width: 100%;
+			    z-index: 1;
+			}
+
+			#banner{
+					background: url("../img/Youth.jpg") no-repeat center center fixed;
+					-webkit-background-size: cover;
+					-o-background-size: cover;
+					-moz-background-size: cover;
+					background-size: cover;
+					height: 500px;
+					position: relative;
+					width: 100%;
+					overflow: auto;
+					margin-bottom: 0px;
 					}
-			.well-body{
-				opacity: 1
-			}
-			.btn{
+
+			 #cont{
+				display: block;
+				position: absolute;
+				top: 150px;
+				left: 0px;
+				width: 100%;
+				height: 150px;
+				margin-top: 0px;
+
+				}
+			a.special, a.down{
+				display: inline-block;
+				border: 2px solid black;
+				color: black;
+				margin: 5px;
 				height: 50px;
-				width: 90px;
-				padding: 10px;
+				width: 100px;
+				padding-top: 0.8%;
+				text-align: center;
+				text-decoration: none;
+				font-size: 1.4em;
 			}
-			#row > .col-lg-offset-4{
-				margin-top: 150px;
-				margin-left:470px;
+			a.special:hover, a.special:visited{
+				color: black;
+				text-decoration: none;
+				opacity: .7;
+			}
+			a.down{
+				color: white !important;
+				border: 2px solid white !important;
+			}
+			
+			#box-row{
+				//- height: 100px;
+				padding: 0px;
+			}
+			main{
+				position: relative;
+				padding-top: 0;
+				width: 100%;
+				margin: 0px;
+				text-align: center;
+			}
+			.box{
+				height: 180px;
+				background-color: #337ac7;
+				margin-top: 10px;
+				margin-bottom: 10px;
+				//- margin-left: 1px;
+				//- margin-right: 1px;
+				border: 2px solid white;
+				position: relative;
 				color: white;
+				//- width: 300px;
 
 			}
 
+			.plan{
+				height: 180px;
+				background-color: #d43f3a;
+				margin-top: 10px;
+				margin-bottom: 10px;
+				//- margin-left: 1px;
+				//- margin-right: 1px;
+				border: 2px solid white;
+				position: relative;
+				color: white;
+				//- width: 300px;
 
+			}
+
+			.testimonies{
+				height: 180px;
+				background-color: #d43f3a;
+				margin-top: 10px;
+				margin-bottom: 10px;
+				//- margin-left: 1px;
+				//- margin-right: 1px;
+				border: 2px solid white;
+				position: relative;
+				color: white;
+				//- width: 300px;
+
+			}
+
+			#about-us{
+				text-align: center;
+			}
+
+			footer{
+				height: 360px;
+			}
+			.navbar{
+				margin-bottom: 0px;
+				}
+			
 
 	body
 
-		.container
-			.row#row
-				.col-lg-offset-4.col-md-12.center
-					input.btn.btn-default(type='button' value='register' id='register')
-					input.btn.btn-default(type='button' 
-					style='margin-left:7px' value='Login' id='login')
-							
-		
+		header
+			nav.navbar.navbar-inverse(role="navigation")
+				.container#nav-container
+					.navbar-header
+						button.navbar-toggle(type='button' data-toggle="collapse" data-target="#example-navbar-collapse")
+							span.sr-only Click Me
+							span.icon-bar
+							span.icon-bar
+							span.icon-bar
+						a.navbar-brand(href='/') Swaaypay
+					#example-navbar-collapse.collapse.navbar-collapse.collapse
+						ul.nav.navbar-nav.visible-xs.visible-sm.visible-md
+							li.dropdown
+								a(href="#" data-toggle="dropdown" class='dropdown-toggle') Navigation
+									b.caret
+								ul.dropdown-menu
+									li
+										a(href='/users/register')
+											span.glyphicon.glyphicon-plus   register
+									li
+										a(href='/users/login')
+											span.glyphicon.glyphicon-log-in   login
+						ul.nav.navbar-nav.pull-right.visible-lg.hidden-md.hidden-sm.hidden-xs
+							li.dropdown
+								a(href="#" data-toggle="dropdown" class='dropdown-toggle') Navigation
+									b.caret
+								ul.dropdown-menu
+									li
+										a(href='/users/register')
+											span.glyphicon.glyphicon-plus   register
+									li
+										a(href='/users/login')
+											span.glyphicon.glyphicon-log-in   login
+
+		div#banner
+			.container#cont
+				.row#row
+					.col-lg-12.col-md-12.col-sm-12.col-xs-12.Btns.text-center
+						a.special(href='/users/register') register
+						a.special(href='/users/login') login
+		main
+			h2.text-center Reasons To Join Us
+			div.container#box-content
+				.col-lg-3.text-center.box
+					br
+					span.glyphicon.glyphicon-home
+					br
+					h3 it's fast
+					br
+					b Get your investment back in no time
+
+				.col-lg-3.text-center.box
+					br
+					span.glyphicon.glyphicon-home
+					br
+					h3 it's Easy
+					br
+					b Pay your upline and get payed 150% your investment
+
+				.col-lg-3.text-center.box
+					br
+					span.glyphicon.glyphicon-home
+					br
+					h3 it's Stable
+					br
+					b You have nothing to fear because this platform is secured
+
+				.col-lg-3.text-center.box
+					br
+					span.glyphicon.glyphicon-home
+					br
+					h3 it's helps
+					br
+					b In no time, you'll be made.
+
+			div.container#about-us
+				h2 ABOUT US 
+				b Swaaypay is an independently organised financial platform aimed at promoting redistribution of wealth collectively by members of the community. The platform is based on trust and sincerity whereby members contribute a portion of their financial resources of their choice to other members in order to help raise capital for their businesses or school fees etc and then become elligible to receive donations from other members within the community.
+
+			div.container#our-plan
+				h2 How it works
+				.col-lg-12.text-center.plan
+					br
+					span.glyphicon.glyphicon-usd
+					br
+					h3 One
+					br
+					b Make a reservation from C100 and above and pay as soon as possible.
+				.col-lg-12.text-center.plan
+					br
+					span.glyphicon.glyphicon-info-sign
+					br
+					h3 Two
+					br
+					b Get confirmed by your upline you reserved above
+				.col-lg-12.text-center.plan
+					br
+					span.glyphicon.glyphicon-info-sign
+					br
+					h3 Three
+					br
+					b Upon confirmation, your name will automatically be up for reservation for you also to get payed.
+				.col-lg-12.text-center.plan
+					br
+					span.glyphicon.glyphicon-info-sign
+					br
+					h3 Four
+					br
+					b You'll receive a total of <b>150%</b> your investment.
+
+				
+		footer
+				h4 Disclaimer
+				b Swaaypay is a platform where you invest and expect a ROI in no time. However, it is advisable to invest your spare cash as this platform will not be responsible for any loss whatsoever.
+				br
+				
+				.row
+					.col-lg-4.col-md-4.hidden-sm.hidden-xs
+						img(src='../img/Gflag.jpg' width='120' height='80' style='margin-left: 350px;')
+
+					.col-sm-12.col-xs-12.hidden-lg.hidden-md
+						img(src='../img/Gflag.jpg' width='120' height='80')
+					
+					.col-lg-4.col-md-4.col-sm-12.col-xs-12
+						a.down(href='/users/register') register
+						a.down(href='/users/login') login
+
+					.col-lg-4.col-md-4.col-sm-12.col-xs-12
+
+
+				br
+				b copyright &copy; 2017
+				br
+				i designed by encrybit01@gmail.com
+
 		script(src='/bowe_components/jquery/dist/jquery.js')
 		script(src='/bowe_components/bootstrap/dist/js/bootstrap.js')
 		script(src='/js/main.js')
-		
-		script.
-			$(document).ready(function(){
-				$('#login').on('click', function(e){
-					window.location.href='/users/login';
-				});
-				$('#register').on('click', function(e){
-					window.location.href='/users/register';
-				});
-			});

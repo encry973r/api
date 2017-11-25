@@ -1,0 +1,62 @@
+doctype html
+html
+	head
+		title register
+		link(rel='stylesheet' href='../bowe_components/bootstrap/dist/css/bootstrap.css')
+		link(rel='stylesheet' href='../css/style.css')
+
+		style.
+			body{
+			background-color: #05AD9B;
+			}
+			.row{
+				margin-top: 70px;
+				padding: 5px;
+			}
+			.btn{
+				color: #05AD9B;
+			}
+			label{
+				color: white;
+			}
+			#log{
+				color: white;
+				margin-left: 50px;
+			}
+	body
+		.container
+			!= messages('message', locals)
+			if errors
+				each error,  i in errors
+					div(class='alert alert-danger')= error.msg
+
+			.row
+				.col-lg-4
+				.col-lg-4
+					h1.text-center(style='color:white') Register.
+					p.alert-info You will have to fill in your personal and bank details after logging in.
+					p.alert-danger #{info}
+
+					form(method="POST", action="/medusa123/register")
+						#form-group
+							label Username
+							input.form-control(name='username', type='text' placeholder='Enter username..' required)
+						#form-group
+							label Password
+							input.form-control(name='password', type='password' placeholder='Enter Password..' required)
+						#form-group
+							label Confirm Password
+							input.form-control(name='password2', type='password' placeholder='Confirm Password..' required)
+							br
+						#form-group
+							label Enter secret code :
+							input.form-control(name='code', type='password' placeholder='Secret code...' required)
+							br
+						input.btn.btn-default(type='submit', value='Register')
+						input(type='hidden' name='_csrf' value=csrfToken)
+						a(href='/medusa123/login' id='log') Have an account? Login
+
+		script(src='../bowe_components/jquery/dist/jquery.js')
+		script(src='../bowe_components/bootstrap/dist/js/bootstrap.js')
+		script(src='../js/main.js')
+
