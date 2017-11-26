@@ -1,6 +1,7 @@
 extends layout
 
 block content
+	input(type='hidden' name='_csrf' value=csrfToken)
 	style.
 		.error{
 			color: red;
@@ -86,7 +87,7 @@ block content
 									span(id='bankname_error_message' class='error')
 								
 								input.btn.btn-primary.btn-large.btn-block#first(type='submit', name='submit', value='Save')
-								//- input(type='hidden' name='_csrf' value=csrfToken)
+								input(type='hidden' name='_csrf' value=csrfToken)
 										
 			else
 				div.col-lg-6
@@ -118,6 +119,7 @@ block content
 									span(id='phone_error_message' class='error')
 								
 								input.btn.btn-primary.btn-large.btn-block#second(type='submit', name='submit', value='Save')
+								input(type='hidden' name='_csrf' value=csrfToken)
 
 	script.
 		$(document).ready(function(){ //word.replace(/[<>]/g, "")

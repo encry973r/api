@@ -14,6 +14,7 @@ block content
 						th Declined Firstname
 						th Declined Lastname
 						th Amount Declined
+						th Pop
 						th Approve
 						th Decline
 				tbody
@@ -26,6 +27,17 @@ block content
 									td= inc.downlineFirstname
 									td= inc.downlineLastname
 									td= inc.amount
+									td
+										input.btn.btn-primary#pop(type='button' value='view pop' data-toggle="modal" data-target="#popModal")
+										div.modal.fade(tabindex="-1" id="popModal" role="dialog" aria-labelledby="myModalLabel3" aria-hidden="true")
+											div.modal-dialog
+												div.modal-content
+													div.modal-header
+														button.close(data-dismiss="modal" aria-hidden="true") &times;
+													div.modal-body
+														img(src='/uploads/'+inc.imageName,  alt='uploaded image' width='500px' height='500px' data-id='image')
+													div.modal-footer
+														input.btn.btn-default(type="button" data-dismiss="modal" value='Close') 
 									td#stateApproved
 										input.btn.btn-primary#approve(type='button' value='Approve' data-toggle="modal" data-target="#approveModal")
 									td#stateDeclined

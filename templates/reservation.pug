@@ -15,7 +15,10 @@ block content
 					th Action
 			tbody
 				if current_state.state == 'show'
-					if deadline == 'empty' || user.suspended == false
+
+					if user.suspended == true
+						h3(style='color: red') Your account has been suspended. You are not allowed to make/receive any reservation until it is reactivated in #{timeLeft}hrs time.
+					else if (deadline == 'Approved' || empty == 'true')
 						if reserves
 							each reserve, i in reserves
 								tr
@@ -39,8 +42,10 @@ block content
 									td= reserve.firstname
 									td Not allowed
 					else if deadline == 'expired'
-						h3 Your time for payment has expired.
-					else if user.suspended == true && timeLeft > 0
-						h3(style='color: red') Your account has been suspended. You are not allowed to make any reservation until it is reactivated in #{timeLeft}hrs time.
+						h3 Your time for payment has expired. The admin will look into your transaction soon...
+					//- else if user.suspended == 'true'
+					//- 	h3(style='color: red') Your account has been suspended. You are not allowed to make/receive any reservation until it is reactivated in #{timeLeft}hrs time.
+				else
+					p.alert.alert-info List would be released soon, stay with us...
 						
 		script.

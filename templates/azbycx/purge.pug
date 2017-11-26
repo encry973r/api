@@ -23,6 +23,7 @@ block content
 
 				$.post('/medusa123/purge', function(response){
 					alert(response.msg);
+					window.location.href = '/medusa123/purged-accounts';
 				});
 			})
 		})

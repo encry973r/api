@@ -48,7 +48,7 @@ block content
 						input.form-control(name='password', id='password', type='password', required='required', placeholder='Enter Password..' minlength='6' maxlength='15')
 						span(id='password_error_message')
 						br
-					input.btn.btn-default.btn-block(type='submit', value='Login')
+					input.btn.btn-default.btn-block(type='submit', value='Login', style='background-color: #101010; color: white')
 					input(type='hidden' name='_csrf' value=csrfToken)
 					a(href='/users/register' id='reg') Register?
 					a(href='/users/reset-passwd' id='forgot') Forgot password?

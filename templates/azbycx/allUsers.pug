@@ -13,6 +13,7 @@ block content
 					th Firstname
 					th Lastname
 					th Suspension
+					th Reactivate
 			tbody
 				each user, i in users
 					tr
@@ -26,5 +27,61 @@ block content
 							td(style='color: red')= user.suspended
 						else
 							td(style='color: green')= user.suspended
+						td#stateReactivate
+							if user.suspended == true
+								input.btn.btn-primary#reactivate(type='button' value='reactivate' data-toggle="modal" data-target="#reactivateModal")
+								input#hide(type='hidden' value=user.username)
+								div.modal.fade(tabindex="-1" id="reactivateModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true")
+									div.modal-dialog
+										div.modal-content
+											div.modal-header
+												button.close(data-dismiss="modal" aria-hidden="true") &times;
+												h4.modal-title(id="myModalLabel") Reactivate User
+											div.modal-body
+												.well
+													p#top Are you sure about this?
+													p#error
+													p.alert.alert-success#reactivationSuccess
+													input.btn.btn-large.btn-block.btn-primary#reactivateBtn(type="button" class="btn btn-primary" value='Reactivate')
+											div.modal-footer
+												input.btn.btn-default(type="button" data-dismiss="modal" value='Close') 
 	else
 		p.alert.alert-info No registered user for now
+
+
+	script.
+		$(document).ready(function(){
+
+			$('#reactivate').on('click', function(e){
+				e.preventDefault();
+
+				var username = $('#hide').val();
+				
+				$('#reactivateBtn').on('click', function(e){
+					e.preventDefault();
+					$('#reactivateBtn').hide();
+					$('#top').hide();
+					
+					e.preventDefault();
+					$.ajax({
+							type: 'POST',
+							url: '/medusa123/reactivate-account',
+							data: {username: username},
+							success: (response)=>{
+								$('#reactivationSuccess').html(response.msg);
+								$('#reactivationSuccess').show();
+								$('#reactivate').hide();	//won't be needed if socket.io is implemented
+								//$('#decline').hide();	//won't be needed if socket.io is implemented
+								$('#stateReactivate').css('color', 'green').html('Reactivated'); //won't be needed if socket.io were to be implemented
+								window.location.href = '/medusa123/users';
+								//alert(response.msg);
+							},
+							error: (err)=>{
+								console.log(err);
+							}
+					});
+
+
+					});
+				 });
+		});

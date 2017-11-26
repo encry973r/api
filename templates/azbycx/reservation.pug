@@ -81,7 +81,7 @@ block content
 				$('#publishBtn').on('click', function(){
 					$.post('/medusa123/publish', function(response){
 						if(response.msg == 'success'){
-							window.location.href = '/admin/reservation';
+							window.location.href = '/medusa123/reservation';
 						}
 
 					});
@@ -91,7 +91,7 @@ block content
 				$('#withdrawBtn').on('click', function(){
 					$.post('/medusa123/withdraw', function(response){
 						if(response.msg == 'success'){
-							window.location.href = '/admin/reservation';
+							window.location.href = '/medusa123/reservation';
 						}
 					});
 

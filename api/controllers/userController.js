@@ -180,6 +180,14 @@ exports.get_dashboard = function(req, res, next){
 // get reservation list
 exports.get_reservation_list = function(req, res, next){
 
+	var suspensionTime = req.user.suspensionTime;
+	var date = new Date();
+	var now = date.getTime();
+	var timeLeft = suspensionTime - now;
+	timeLeft = parseInt(timeLeft/(1000*3600));
+	console.log({timeLeft: timeLeft});
+	console.log({place: 1});
+
 		//use findOne if a single object is needed and not an array of object. If only 'find' is used, an array would be returned. Hence the use of index 
 		//to assess the objects present even if only one object is present!
 		Displaylist.findOne({flag: 'flag'}, function(err, obj){
@@ -194,18 +202,12 @@ exports.get_reservation_list = function(req, res, next){
 		}
 
 		if(obj){///////////////////////////////////
-			console.log(obj);
+			//console.log(obj);
 			var confirmation_flag;
-			var date = new Date();
-			var now = date.getTime();
 			var incoming, outgoing;
 			var suspended = req.user.suspended;
 
-			var suspensionTime = req.user.suspensionTime;
-			var timeLeft = suspensionTime - now;
-			timeLeft = parseInt(timeLeft/(1000*3600));
-
-			if(req.user.outgoingReservations != ''){
+			if(req.user.outgoingReservations != ''){ //old users
 				for(var i = 0; i < req.user.outgoingReservations.length; i++){
 					if(req.user.outgoingReservations.length - i == 1){
 						outgoing = req.user.outgoingReservations[i];
@@ -213,10 +215,11 @@ exports.get_reservation_list = function(req, res, next){
 						confirmation_flag = req.user.outgoingReservations[i].confirmation_flag;
 					}
 				}
+				console.log({place: 2});
 
-				if(deadline == ''){ //new user
-					deadline = 'empty';
-				}else if(deadline > now && confirmation_flag == 'Pending'  && suspended == false){ //not yet expired
+				console.log({deadline: deadline});
+
+				if(deadline > now && confirmation_flag == 'Pending'  && suspended == false){ //not yet expired
 					deadline = 'Pending';
 				}else if(deadline < now && confirmation_flag == 'Pending' && suspended == true){ // expired and suspended
 					deadline = 'Suspended';
@@ -228,17 +231,29 @@ exports.get_reservation_list = function(req, res, next){
 					deadline = 'Declined';
 				}
 
+				//Release admin that has been suspended due to any declined transaction.
+				User.update({admin: true}, {$set: {suspended: false, suspensionTime: 0}}, function(err, changed){
+					if(err){
+						console.log(err);
+						return;
+					}else{
+						console.log({msg: 'Admin no longer suspended'});
+					}
+				})
+
 				User.find({amountRemaining: {'$ne': 0, '$gt': 0}, suspended: false}, function(err, users){
 					if(err){
 						console.log(err);
 						return;
 					}else{
+						console.log({place: 3});
 						res.render('reservation', {reserves: users, user: req.user, deadline: deadline, timeLeft: timeLeft, current_state: obj, outgoing: outgoing, incoming: incoming});
 						next();
 					}
 
 				});
-			}else{
+			}else{ //new users
+				console.log({empty : 'new user'});
 
 				User.find({amountRemaining: {'$ne': 0, '$gt': 0}, suspended: false}, function(err, users){
 					if(err){
@@ -291,7 +306,7 @@ exports.get_payment_page = function(req, res, next){
 				uplineBankDetails = upline.bankDetails;
 				res.render('payment', {uplineId: upline._id, realAmount: out.amount, uplineUsername: upline.username, user: req.user, uplineFirstname: upline.firstname,
 				uplineLastname: upline.lastname, uplinePhone: upline.phone, uplineBankDetails: upline.bankDetails, image: imageName, coupleId: coupleId,
-				amount: out.amount, pop: pop, reserved: 'navigation', csrfToken: req.csrfToken()});
+				amount: out.amount, pop: pop, reserved: 'navigation'});
 			});
 		}else{
 			res.render('payment', {reserved: 'none'});
@@ -411,7 +426,20 @@ exports.submitreservation = function(req, res, next){
 	var status = 'Initial';
 	var date = new Date();
 	var now = date.getTime();
-	var deadline = now + 120000;	//five mins of grace to pay up
+	var deadline = now + 300000;	//5mins of grace to pay up
+	var duname = req.user.username;
+	var outgoings = req.user.outgoingReservations;
+
+	var out = outgoings.pop();
+
+	/*if(out == null){
+		console.log({out: 'this is a new user!'});
+	}else{
+		console.log({out: out.confirmation_flag});
+	}*/
+	
+
+	//return res.send({status: 'Yippie', currentRemainingAmount: 500});
 
 	User.findById(uplineId, function(err, upline){
 
@@ -428,6 +456,10 @@ exports.submitreservation = function(req, res, next){
 
 		}else if(currentRemainingAmount == 0 || currentRemainingAmount < 100){
 			status = 'Sorry, the user has completely been reserved. Kindly pick someone else. Thank you.';
+		}else if(out != null){
+			if(out.confirmation_flag == 'Pending'){
+				status = 'Sorry, you can only make a single reservation at a time.';
+			}
 		}else{
 
 				//this holds an id for both transactions(to tie the outgoing of the downline to the the incoming of the upline)
@@ -662,7 +694,7 @@ exports.decline_downline = function(req, res, next){
 
 // get profile
 exports.get_profile = function(req, res, next){
-	res.render('profile', {bankDetails: req.user.bankDetails, profileUpdated: req.user.profileUpdated});
+	res.render('profile', {bankDetails: req.user.bankDetails, profileUpdated: req.user.profileUpdated}, {csrfToken: req.csrfToken()});
 	next();
 };
 
@@ -866,5 +898,6 @@ exports.submit_testimony = function(req, res, next){
 	});
 
 };
+
 
 ////--------------------------------------------------------END OF PRODUCTION CONTROLLERS--------------------------------------------------------

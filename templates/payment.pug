@@ -72,9 +72,16 @@ block content
 		#uplineInfo{
 			float: left;
 			width: 560px;
+			color: white;
 		}
-		#upload{
-			width: 960px;
+		//- #upload{
+		//- 	width: 960px;
+		//- }
+		p.x{
+			background-color: #1a80e4;
+			color: white;
+			margin-left: 15px;
+			font-size: 1.3em;
 		}
 		
 		
@@ -90,6 +97,8 @@ block content
 			}
 			#uplineInfo{
 				width: 60%;
+				color: white;
+
 			}
 		}
 
@@ -107,6 +116,7 @@ block content
 			}
 			#uplineInfo{
 				width: 100%;
+				color: white;
 			}
 
 		}
@@ -123,6 +133,8 @@ block content
 			}
 			#uplineInfo{
 				width: 400px;
+				//- height: auto;
+				color: white;
 			}
 		}
 
@@ -138,6 +150,7 @@ block content
 			}
 			#uplineInfo{
 				width: 100%;
+				color: white;
 			}
 		}
 
@@ -152,6 +165,7 @@ block content
 			}
 			#uplineInfo{
 				width: 100%;
+				color: white;
 			}
 
 		}
@@ -165,6 +179,7 @@ block content
 			}
 			#uplineInfo{
 				width: 400px;
+				color: white;
 			}
 		}
 
@@ -213,66 +228,60 @@ block content
 
 		else if reserved == 'navigation'
 			div.row#navigation
-				div.well
-					div.well-heading
-						if image == ''
-							h4.alert.alert-info
-							b 1. Upload your proof of payment. Such as, bank teller, screenshot of implemented transactions(atm, mobile-transfer e.t.c.).
-							b 2. You have 16HOURS to make your payment to avoid any form of embarassment from your upline and the Admin. Please comply
-							b 3. Make sure the IMAGE is CLEAR enough and LEGITIMATE else, you stand a chance of not being approved by your upline.
-							b 4. CALL your upline before making any payment.
-							b 5. If by chance you don't get approved by your upline on time, your Proof Of Payment might be your saving grace.
-							b 6. when it is discovered that your proof of payment is fake and your upline didn't approve of your payment, then it becomes your fault.
-							b 7.Please follow all instructions generously to ensure the smooth running of the system. Cheers...
+				.row
+					.col-lg-12
+						ol(style='font-size: 1.3em')
+							li Upload your proof of payment. Such as, bank teller, screenshot of implemented transactions(atm, mobile-transfer e.t.c.).
+							li You have 16HOURS to make your payment to avoid any form of embarassment from your upline and the Admin. Please comply
+							li Make sure the IMAGE is CLEAR enough and LEGITIMATE else, you stand a chance of not being approved by your upline.
+							li CALL your upline before making any payment.
+							li If by chance you don't get approved by your upline on time, your Proof Of Payment might be your saving grace.
+							li when it is discovered that your proof of payment is fake and your upline didn't approve of your payment, then it becomes your fault.
+							li If you do not have the wherewithal to pay, DO NOT PLACE A RESERVATION!
+							li Please follow all instructions generously to ensure the smooth running of the system. Cheers...
 
-						else
-							h4.alert.alert-info Call your upline and make sure he/she approves you on time, so you'll be up for reservation in no time.
-					hr
-					div.well-body
+							//- h4.alert.alert-info Call your upline and make sure he/she approves you on time, so you'll be up for reservation in no time.
+						hr
+				.row
+					.col-lg-12
 						if pop == 'yes'
 							div#imageDiv
 								h4 Uploaded Image
 								img(src='/uploads/'+image, alt='upload file')
 						else if pop == 'no'
-							div#imageDiv2
-								p Upload a proof of payment befor your time elapses!
-						div#uplineInfo
-							div
-								p Id : 
+							p.alert.alert-info(style='margin: 15px; font-size: 1.2em') Upload a proof of payment before your time elapse!
+							h3(style='margin: 15px;') Upline Information.
+							div#uplineInfo(style='margin: 15px; background-color: #1a80e4; margin-top: 0px;')
+								p.x Id : 
 									b#uplineId #{uplineId}
-							div
-								p Upline Username : 
+
+								p.x Upline Username : 
 									b#uplineUsername #{uplineUsername}
 
-							div
-								p Upline Name : 
+								p.x Upline Name : 
 									b#uplinName #{uplineFirstname} #{uplineLastname}
 
-							div
-								p Phone Number : 
+								p.x Phone Number : 
 									b#uplinePhone #{uplinePhone}
 
-							if uplineBankDetails
-								for data, i in uplineBankDetails
-									p Account Holder : 
-										b#accountHolder #{data.accountHolder}
-									p Bankname : 
-										b#bankname #{data.bankname}
-									p Account Number : 
-										b#accountNumber #{data.accountNumber}
-							br
-							hr
-						div#upload
+								if uplineBankDetails
+									for data, i in uplineBankDetails
+										p.x Account Holder : 
+											b#accountHolder #{data.accountHolder}
+										p.x Bankname : 
+											b#bankname #{data.bankname}
+										p.x Account Number : 
+											b#accountNumber #{data.accountNumber}
+				.row
+					.col-lg-12
+						div#upload(style='margin-left: 15px;')
 							if !image
 								form(method='POST', enctype='multipart/form-data' action='/users/payment/upload')
-									.form-group
-										h4 Upload Image
-										.row
-											.col-md-6
-												input.form-control(type='file', name='image', required, placeholder='Upload a file please') 
-												input(type='hidden', name='data', value=coupleId+'/'+uplineId+'/'+amount)
-											.col-md-6
-												input.form-control.btn.btn-primary(type='submit', name='submit', value='Upload')
+									h4 Upload Image
+									input.form-control(type='file', name='image', required, placeholder='Upload a file please') 
+									input(type='hidden', name='data', value=coupleId+'/'+uplineId+'/'+amount)
+									br
+									input.btn.btn-primary(type='submit', name='submit', value='Upload')
 		else if reserved == 'none'
 			div.alert.alert-info(style='color: blue; font-size: 1.5em;')
 				p Sorry, you do not have any outstanding payment for now. 
@@ -359,7 +368,6 @@ block content
 				$.post('/users/submitreservation', {amountInput:amountInput, uplineId: uplineId, realAmount: realAmount}, function(response){
 
 					if(response.currentRemainingAmount == 0 || response.currentRemainingAmount < 100){
-
 						//Refresh
 						$('#error').html(response.status);
 						$('#myModal').modal();
@@ -367,15 +375,18 @@ block content
 							e.preventDefault();
 							window.location.href = '/users/reservation';
 						});
+						window.location.href = '/users/reservation';
 
 					}else if(amountInput > response.currentRemainingAmount && response.currentRemainingAmount >= 100){
 						$('#realAmount').text(response.currentRemainingAmount);
 						$('#error').html(response.status);
 						$('#okay').hide();
 						$('#myModal').modal();
-					}else{
+						window.location.href = '/users/transactions';
+					}else if(amountInput < response.currentRemainingAmount ){
 						$('#error').html(response.status);
 						$('#myModal').modal();
+						window.location.href = '/users/transactions';
 						$('#okay').on('click', function(e){
 							e.preventDefault();
 							window.location.href = '/users/transactions';

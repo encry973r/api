@@ -90,6 +90,10 @@ block content
 							.form-group
 								label Bankname
 								input.form-control(type='text', name='bankname', required, placeholder='Enter bankname')
+							.form-group
+								label Phone
+								input.form-control(type='text', name='phone', id='phone', placeholder='Optional...' maxlength='11')
+								span(id='phone_error_message' class='error')
 							
 							input.btn.btn-primary.btn-large.btn-block(type='submit', name='submit', value='Save')
 

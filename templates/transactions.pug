@@ -30,13 +30,17 @@ block content
 							td 
 								p #{out.uplineFirstname} #{out.uplineLastname}
 							td= out.phone
+
 							each bank, i in out.bank
 								td= bank.bankname
 								td= bank.accountHolder
 								td= bank.accountNumber
 								td= out.amount
-							if out.confirmation_flag == 'Pending'
+
+							if out.confirmation_flag == 'Pending' && out.deadline >= 0
 								td(style='color: black')= out.confirmation_flag
+							else if out.confirmation_flag == 'Pending' && out.deadline < 0
+								td(style='color: red') Time exceeded
 							else if out.confirmation_flag == 'Declined'
 								td(style='color: #d9534f')= out.confirmation_flag
 							else
@@ -51,8 +55,8 @@ block content
 								td(style='color: green')
 									b Declined
 							else
-								td(style='color: red') time exceeded
-						if out.deadline >= 0 && out.pop == 'no'
+								td(style='color: red') Time exceeded
+						if out.deadline >= 0 && out.pop == 'no' && out.confirmation_flag == 'Pending'
 							a.btn.btn-success(href='/users/payment') Click to upload proof of payment
 							br
 							br
@@ -84,15 +88,15 @@ block content
 							td= inc.phone
 							td= inc.amount
 							if inc.confirmation_flag == 'Pending'
-								if inc.deadline > 0
+								if inc.deadline >= 0
 									td#stateApprove
 										input.btn.btn-primary#approve(type='button' value='approve' data-toggle="modal" data-target="#approveModal")
 									td#stateDecline
 										input.btn.btn-danger#decline(type='button' value='Decline' style='margin-left:10px' data-toggle="modal" data-target="#declineModal")
 										input#hiddenData(type='hidden' value=inc.downline+'/'+inc.amount+'/'+inc.coupleIndex+'/'+inc.coupleId+'/'+uplineIndex+'/'+inc.imageName)
 								else
-									td(style='color: red') Suspended
-									td(style='color: red') Suspended
+									td(style='color: red') Time exceeded
+									td(style='color: red') Time exceeded
 
 							else if inc.confirmation_flag == 'Declined'
 								td(style='color: #d9534f')
@@ -112,10 +116,10 @@ block content
 									td(style='color: green')
 										b Approved
 								else if inc.confirmation_flag == 'Declined'
-									td(style='color: green')
+									td(style='color:  #d9534f')
 										b Declined
 								else
-									td(style='color: red') time exceeded
+									td(style='color: red') Time exceeded
 							if inc.pop == 'yes'
 								td
 									input.btn.btn-primary#approve(type='button' value='view pop' data-toggle="modal" data-target="#popModal")

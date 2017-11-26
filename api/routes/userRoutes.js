@@ -82,15 +82,16 @@ function checkSuspended(req, res, next){
 
 				//check if suspension time has elapsed
 			if(suspensionTime > now){
-
-				var suspensionTime = user.suspensionTime;
-				var timeLeft = suspensionTime - now;
-				timeLeft = parseInt(timeLeft/(1000*3600));
+				//let the user login so as to enable hi/her send a message to admin.
+				next();
+				//var suspensionTime = user.suspensionTime;
+				//var timeLeft = suspensionTime - now;
+				//timeLeft = parseInt(timeLeft/(1000*3600));
 				//if not
-				req.flash('danger', 'Your account has been suspend. Would be reactivated in '+ timeLeft + ' hrs time');
-				res.redirect('login');
+				//req.flash('danger', 'Your account has been suspend. Would be reactivated in '+ timeLeft + ' hrs time');
+				//res.redirect('login');
 			}else{
-
+					//if time has elapsed, reactivate user.
 				User.update({username: username}, {$set: {suspended: false, suspensionTime: 0}}, function(err, active){
 					if(err){
 						console.log(err);
@@ -143,7 +144,7 @@ function checkSuspended(req, res, next){
 	router.post('/payment', ensureAuthenticated, userController.post_to_payment_page);//get_payment_page
 
 		//update profile
-	router.post('/payment/upload', ensureAuthenticated, upload.single(), userController.upload_pop);
+	router.post('/payment/upload', ensureAuthenticated, upload.any(), userController.upload_pop);//
 
 	//load reservation list
 	router.post('/payment/amountRemaining', ensureAuthenticated, userController.get_current_ammountRemaining);
@@ -158,10 +159,10 @@ function checkSuspended(req, res, next){
 	router.post('/declinedownline', ensureAuthenticated, userController.decline_downline); //declinedownline
 
 		//load profile
-	router.get('/profile', ensureAuthenticated, userController.get_profile);//profile/upload/image
+	router.get('/profile', csrfProtection, ensureAuthenticated, userController.get_profile);//profile/upload/image
 
 		//update profile
-	router.post('/profile', ensureAuthenticated, userController.update_profile);
+	router.post('/profile', csrfProtection, ensureAuthenticated, userController.update_profile);
 
 		//load support
 	router.get('/support', ensureAuthenticated, userController.get_support);

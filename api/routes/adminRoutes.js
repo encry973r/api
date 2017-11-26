@@ -118,7 +118,7 @@ function needsGroup(req, res, next){
 	router.get('/testimonies', ensureAuthenticated, adminController.get_all_testimonies);
 
 	//get all declined transactions
-	//router.post('/reactivate-acct', ensureAuthenticated, adminController.reactivate_account);
+	router.post('/reactivate-account', ensureAuthenticated, adminController.reactivate_account);
 
 	//get all declined transactions
 	router.get('/purge', ensureAuthenticated, adminController.get_purge_page); //get purge page so as to enable you purge defaulters

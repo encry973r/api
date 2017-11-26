@@ -17,7 +17,7 @@ const bcrypt = require('bcryptjs');
 
 //get_admin_register_form
 exports.get_admin_register_form = function(req, res, next){
-	res.render('azbycx/register');
+	res.render('azbycx/register', {csrfToken: req.csrfToken()});
 	next();
 }
 
@@ -123,7 +123,7 @@ exports.register_admin = function(req, res, next){
 								}else{
 									req.flash('success', 'You are now registered and can log in');
 									res.redirect('/medusa123/login');
-									next();
+									//next();
 								}
 							});
 						});
@@ -138,7 +138,7 @@ exports.register_admin = function(req, res, next){
 //get_admin_login_form
 exports.get_admin_login_form = function(req, res, next){
 	//always use admin since since its the admin login template we are after!
-	res.render('azbycx/login');
+	res.render('azbycx/login', {csrfToken: req.csrfToken()});
 	next();
 }
 
@@ -163,9 +163,9 @@ exports.logout_admin = function(req, res, next){
 //get_admin_dashboard
 exports.get_admin_dashboard = function(req, res, next){
 	//const amountRemaining = parseInt(req.user.amountRemaining);
-	const amountReceived = parseInt(req.user.amountReceived);
-	const amountReserved = parseInt(req.user.amountReserved);
-	const amountRemaining = parseInt(amountReserved*1.5 - amountReceived);
+	var amountReceived = parseInt(req.user.amountReceived);
+	var amountReserved = parseInt(req.user.amountReserved);
+	var amountRemaining = parseInt(req.user.amountRemaining);
 
 	res.render('azbycx/dashboard', {reserved: amountReserved, received: amountReceived, remainder: amountRemaining});
 	next();
@@ -269,7 +269,6 @@ exports.update_admin_profile = function(req, res, next){
 
 	req.flash('success', 'Profile Updated...');
 	res.redirect('/medusa123/profile');
-	next();
 }
 
 
@@ -415,8 +414,6 @@ exports.approve_declined_downline = function(req, res, next){
 	var suspensionTime = now + (48*3600*1000); //48hrs suspension
 	//const uplineIndex = req.body.uplineIndex; //not useful since mongoose helps us find the index using the '$' notation.
 
-		//db.blog.update({"comments.author" : "John"}, {"$set" : {"comments.$.author" : "Jim"}})
-
 		//changes the upline action status to 'Approved'. so the 'Approve' and 'Decline' buttons vanishes on rendering
 	User.update({"incomingReservations.coupleId": coupleId},
 		{$set: {suspended: true, suspensionTime: suspensionTime, "incomingReservations.$.confirmation_flag" :  "Approved", "incomingReservations.$.imageName" :  "Approved",
@@ -438,20 +435,19 @@ exports.approve_declined_downline = function(req, res, next){
 					//log the result of the update. I.e the status. 'updated' contains the execution stats such as these "{ ok: 0, n: 0, nModified: 0 }"
 				console.log({msg: updatedUpline});
 
-				//delete any message sent by upline
-				Complaint.update({sender: uplineUsername}, {$pull: {sender: uplineUsername}}, function(err, result){
+				Complaint.remove({sender: uplineUsername}, function(err, removed){
+
 					if(err){
 						console.log(err);
 						return;
 					}
 
-					if(result){
+					if(removed){
 						console.log({msg: 'Upline\'s message(s) deleted'});
 					}else{
 						console.log({msg: 'Upline probably didn\'t send a complain'});
 					}
-
-				});
+					});
 
 				//Delete the image.
 				fs.unlink("C:\\Users\\luser\\Pictures\\MEPN\\api\\public\\uploads\\"+imageName, function(err){
@@ -480,16 +476,16 @@ exports.approve_declined_downline = function(req, res, next){
 						console.log({msg: reducedAmountRemaining});
 
 						//delete any complaint sent by downline
-						Complaint.update({sender: duname}, {$pull: {sender: duname}}, function(err, result){
+						Complaint.remove({sender: duname}, function(err, removed){
 							if(err){
 								console.log(err);
 								return;
 							}
-							
-							if(result){
-								console.log({msg: 'Downline\'s message(s) deleted'});
+
+							if(removed){
+								console.log({msg: "Downline's message(s) deleted"});
 							}else{
-								console.log({msg: 'Downline probably didn\'t send a complain'});
+								console.log({msg: "Downline probably didn't send a complaint"});
 							}
 						});
 
@@ -629,20 +625,18 @@ exports.decline_declined_downline = function(req, res, next){
 					console.log({updated: updatedUpline});
 
 					//delete any message sent by upline
-					Complaint.update({sender: uplineUsername}, {$pull: {sender: uplineUsername}}, function(err, result){
+					Complaint.remove({sender: uplineUsername}, function(err, removed){
 						if(err){
 							console.log(err);
 							return;
 						}
 
-						if(result){
+						if(removed){
 							console.log({msg: 'Upline\'s message(s) deleted'});
 						}else{
-							console.log({msg: 'Upline probably didn\'t send a complain'});
+							console.log({msg: 'Upline probably didn\'t send a complaint'});
 						}
-
 					});
-
 
 					//changes the downline status to Declined. so the 'Pending' text vanishes on rendering 
 					User.update({"outgoingReservations._id": coupleId}, {$set: { suspended: true, suspensionTime: suspensionTime, "outgoingReservations.$.confirmation_flag" :  "Declined",
@@ -655,20 +649,20 @@ exports.decline_declined_downline = function(req, res, next){
 
 							console.log({msg: updatedDownline});
 
-							//delete any message sent by upline
-							Complaint.update({sender: duname}, {$pull: {sender: duname}}, function(err, result){
+							//delete any complaint sent by downline
+							Complaint.remove({sender: duname}, function(err, removed){
 								if(err){
 									console.log(err);
 									return;
 								}
 
-								if(result){
-									console.log({msg: 'Downline\'s message(s) deleted'});
+								if(removed){
+									console.log({msg: "Downline's message(s) deleted"});
 								}else{
-									console.log({msg: 'Downline probably didn\'t send a complain'});
+									console.log({msg: "Downline probably didn't send a complaint"});
 								}
-
 							});
+
 					});////one
 
 					res.send({msg: 'Payment Decline success!'});
@@ -966,8 +960,6 @@ exports.approve_purged_downline = function(req, res, next){
 	var suspensionTime = now + 48*3600*1000; //48hrs suspension
 	//const uplineIndex = req.body.uplineIndex; //not useful since mongoose helps us find the index using the '$' notation.
 
-		//db.blog.update({"comments.author" : "John"}, {"$set" : {"comments.$.author" : "Jim"}})
-
 		//changes the upline action status to 'Approved'. so the 'Approve' and 'Decline' buttons vanishes on rendering
 		//suspend the uplkine for wasting downline's time.
 
@@ -1007,35 +999,34 @@ exports.approve_purged_downline = function(req, res, next){
 									console.log(err);
 									return;
 								}
-
+								
 								//delete any message sent by upline
-								Complaint.update({sender: uplineUsername}, {$pull: {sender: uplineUsername}}, function(err, result){
+								Complaint.remove({sender: uplineUsername}, function(err, removed){
 									if(err){
 										console.log(err);
 										return;
 									}
 
-									if(result){
+									if(removed){
 										console.log({msg: 'Upline\'s message(s) deleted'});
 									}else{
 										console.log({msg: 'Upline probably didn\'t send a complain'});
 									}
-
 								});
 
-								//delete any message sent by downline
-								Complaint.update({sender: duname}, {$pull: {sender: duname}}, function(err, result){
+
+								//delete any complaint sent by downline
+								Complaint.find({sender: duname}, function(err, removed){
 									if(err){
 										console.log(err);
 										return;
 									}
 
-									if(result){
-										console.log({msg: 'Downline\'s message(s) deleted'});
+									if(removed){
+										console.log({msg: "Downline's message(s) deleted"});
 									}else{
-										console.log({msg: 'Downline probably didn\'t send a complain'});
+										console.log({msg: "Downline probably didn't send a complaint"});
 									}
-
 								});
 							});
 						}
@@ -1167,13 +1158,13 @@ exports.decline_purged_downline = function(req, res, next){
 							console.log({msg: 'image :' + image + ' was successfully deleted!'});
 
 							//delete any message sent by upline
-							Complaint.update({sender: uplineUsername}, {$pull: {sender: uplineUsername}}, function(err, result){
+							Complaint.remove({sender: uplineUsername}, function(err, removed){
 								if(err){
 									console.log(err);
 									return;
 								}
 
-								if(result){
+								if(removed){
 									console.log({msg: 'Upline\'s message(s) deleted'});
 								}else{
 									console.log({msg: 'Upline probably didn\'t send a complain'});
@@ -1181,19 +1172,18 @@ exports.decline_purged_downline = function(req, res, next){
 
 							});
 
-							//delete any message sent by downline
-							Complaint.update({sender: duname}, {$pull: {sender: duname}}, function(err, result){
+							//delete any complaint sent by downline
+							Complaint.find({sender: duname}, function(err, removed){
 								if(err){
 									console.log(err);
 									return;
 								}
 
-								if(result){
-									console.log({msg: 'Downline\'s message(s) deleted'});
+								if(removed){
+									console.log({msg: "Downline's message(s) deleted"});
 								}else{
-									console.log({msg: 'Downline probably didn\'t send a complain'});
+									console.log({msg: "Downline probably didn't send a complaint"});
 								}
-
 							});
 						});
 
@@ -1221,3 +1211,20 @@ exports.decline_purged_downline = function(req, res, next){
 		
 	
 }
+
+//reactivate-account
+exports.reactivate_account = function(req, res, next){
+	const username = req.body.username;
+	User.findOneAndUpdate({username: username}, {$set: {suspended: false, suspensionTime: 0}}, function(err, updated){
+		if(err){
+			console.log(err);
+			return;
+		}
+		if(updated){
+			res.send({msg: 'User account reactivated'});
+		}else{
+			res.send({msg: 'The user account could not be reactivated at this time.'});
+		}
+	});
+
+};

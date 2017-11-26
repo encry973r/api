@@ -48,9 +48,14 @@ block content
 				var admin_id = data[0];
 				var index = data[1];
 				var amountInput = $('#'+index).val();
+				var pattern = /^[0-9]+$/i;
 
-				if(amountInput > 1000){
-					alert('Enter amount less than or equal C1,000 to prevent the system from crashing');
+				if(!amountInput.match(pattern)){
+					alert('Reservation value can only contain numbers');
+				}else if(amountInput < 100 ){
+					alert('Reservation value should not be lower than C100');
+				}else if(amountInput > 1500){
+					alert('Enter amount less than or equal C1,500 to prevent the system from crashing');
 					$('#'+index).text('');
 					return; //does nothing
 				}else{
