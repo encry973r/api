@@ -1,7 +1,7 @@
 {
   "name": "api",
   "version": "1.0.0",
-  "description": "",
+  "description": "swaapay website",
   "main": "app.js",
   "dependencies": {
     "axios": "^0.16.2",
@@ -34,9 +34,12 @@
   "engines": {
     "node": "8.9.1"
   },
-  "devDependencies": {},
+  "repository" : {
+    "type": "git",
+    "url": "https://github.com/encry973r/api"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js"
   },
   "author": "",
   "license": "ISC"
